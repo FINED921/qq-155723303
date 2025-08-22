@@ -28,8 +28,8 @@ Library.NotifySide = "Right"
 
 local Window = Library:CreateWindow({
     Title = ' 被遗弃｜FIN',
-    Footer = "正式版 V2.1.0",
-    Icon = 108646851620147,
+    Footer = "正式版 V1.0.0",
+    Icon = 106397684977541,
     Center = true,
     AutoShow = true,
     Resizable = true,
@@ -44,18 +44,26 @@ local Tabs = {
     Main = Window:AddTab('快捷功能区','house'),
     Aimbot = Window:AddTab('自瞄区','earth'),
     Esp = Window:AddTab('绘制区','eye'),
+    tzq = Window:AddTab('通知提示','eye'),
+    ani = Window:AddTab('反效果区','file'),
+    Max = Window:AddTab('动作区','file'),
+    Sat = Window:AddTab('体力区','moon'),
+    zdg = Window:AddTab('自动格挡','file'),
+    zdx = Window:AddTab('自动修机','moon'),
+    lol = Window:AddTab('披萨区','earth'),
+    tfz = Window:AddTab('塔夫炸弹','moon'),
     ["UI Settings"] = Window:AddTab('UI调试', 'settings')
 }
 
 local _env = getgenv and getgenv() or {}
 local _hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
 
-local new = Tabs.new:AddRightGroupbox('V2.1.0版本更新内容')
+local new = Tabs.new:AddRightGroupbox('V1.0.0版本更新内容')
 
-new:AddLabel("[+]添加 修机区")
-new:AddLabel("[+]更新 自动修机")
-new:AddLabel("[+]添加 一些功能")
-new:AddLabel("[+]添加 无")
+new:AddLabel("[+]添加 去除前摇 后摇 缓慢动作")
+new:AddLabel("[+添加 速度调节]")
+new:AddLabel("[+]添加 启动聊天框")
+new:AddLabel("[+]展示 功能区")
 
 
 
@@ -953,6 +961,18 @@ ZM:AddSlider('FOVSize', {
     end
 })
 
+ZM:AddSlider('TargetSize', {
+    Text = '自瞄大小',
+    Default = 10,
+    Min = 0,
+    Max = 100,
+    Rounding = 0,
+    Compact = true,
+    Callback = function(Value)
+        aimSettings.size = Value
+    end
+})
+
 ZM:AddToggle('NoWallToggle', {
     Text = '掩体检测',
     Default = false,
@@ -1096,422 +1116,6 @@ Spy = ZM:AddToggle("AimbotToggle", {
             end)
         else
             cleanup()
-        end
-    end
-}):AddKeyPicker("AimKeyPicker", {
-    Text = "自瞄幸存者",
-    Default = "E",
-    Mode = "Toggle",
-    SyncToggleState = true,
-})
-
--- 杀手自瞄
-local HH = Tabs.Aimbot:AddRightGroupbox("自瞄杀手(XuanC)")
-
-local aimSettings = {
-    distance = 100,
-    fov = 100,
-    size = 10,
-    noWall = false,
-    rainbowMode = true 
-}
-
-local aimbotData = {
-    FOVring = nil,
-    connections = {}
-}
-
-HH:AddSlider('AimDistance', {
-    Text = '自瞄距离',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.distance = Value
-    end
-})
-
-HH:AddSlider('FOVSize', {
-    Text = '圈圈大小',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.fov = Value
-    end
-})
-
-HH:AddSlider('TargetSize', {
-    Text = '自瞄大小',
-    Default = 10,
-    Min = 0,
-    Max = 100,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.size = Value
-    end
-})
-
-HH:AddToggle('NoWallToggle', {
-    Text = '掩体检测',
-    Default = false,
-    Tooltip = '自瞄',
-    Callback = function(state)
-        aimSettings.noWall = state
-    end
-})
-
-HH:AddDropdown('ColorSelector', {
-    Values = {
-        'Red',
-        'Green',
-        'Blue',
-        'White',
-        'Yellow',
-        'Cyan',
-        'Magenta',
-        'Rainbow'
-    },
-    Default = 8,
-    Multi = false,
-    Text = '选择颜色',
-    Tooltip = '用于自瞄圈圈的颜色',
-    Callback = function(Value)
-        local colorMap = {
-            Red = Color3.fromRGB(255, 0, 0),
-            Green = Color3.fromRGB(0, 255, 0),
-            Blue = Color3.fromRGB(0, 0, 255),
-            White = Color3.fromRGB(255, 255, 255),
-            Yellow = Color3.fromRGB(255, 255, 0),
-            Cyan = Color3.fromRGB(0, 255, 255),
-            Magenta = Color3.fromRGB(255, 0, 255)
-        }
-
-        if Value == 'Rainbow' then
-            aimSettings.rainbowMode = true
-        else
-            aimSettings.rainbowMode = false
-            local selectedColor = colorMap[Value] or Color3.fromRGB(231, 231, 236)
-            if aimbotData.FOVring then
-                aimbotData.FOVring.Color = selectedColor
-            end
-        end
-    end
-}):AddKeyPicker("AimKeyPicker", {
-    Text = "自瞄幸存者",
-    Default = "E",
-    Mode = "Toggle",
-    SyncToggleState = true,
-})
-
--- 杀手自瞄
-local HH = Tabs.Aimbot:AddRightGroupbox("自瞄杀手(XuanC)")
-
-local aimSettings = {
-    distance = 100,
-    fov = 100,
-    size = 10,
-    noWall = false,
-    rainbowMode = true 
-}
-
-local aimbotData = {
-    FOVring = nil,
-    connections = {}
-}
-
-HH:AddSlider('AimDistance', {
-    Text = '自瞄距离',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.distance = Value
-    end
-})
-
-HH:AddSlider('FOVSize', {
-    Text = '圈圈大小',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.fov = Value
-    end
-})
-
-HH:AddSlider('TargetSize', {
-    Text = '自瞄大小',
-    Default = 10,
-    Min = 0,
-    Max = 100,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.size = Value
-    end
-})
-
-HH:AddToggle('NoWallToggle', {
-    Text = '掩体检测',
-    Default = false,
-    Tooltip = '自瞄',
-    Callback = function(state)
-        aimSettings.noWall = state
-    end
-})
-
-HH:AddDropdown('ColorSelector', {
-    Values = {
-        'Red',
-        'Green',
-        'Blue',
-        'White',
-        'Yellow',
-        'Cyan',
-        'Magenta',
-        'Rainbow'
-    },
-    Default = 8,
-    Multi = false,
-    Text = '选择颜色',
-    Tooltip = '用于自瞄圈圈的颜色',
-    Callback = function(Value)
-        local colorMap = {
-            Red = Color3.fromRGB(255, 0, 0),
-            Green = Color3.fromRGB(0, 255, 0),
-            Blue = Color3.fromRGB(0, 0, 255),
-            White = Color3.fromRGB(255, 255, 255),
-            Yellow = Color3.fromRGB(255, 255, 0),
-            Cyan = Color3.fromRGB(0, 255, 255),
-            Magenta = Color3.fromRGB(255, 0, 255)
-        }
-
-        if Value == 'Rainbow' then
-            aimSettings.rainbowMode = true
-        else
-            aimSettings.rainbowMode = false
-            local selectedColor = colorMap[Value] or Color3.fromRGB(231, 231, 236)
-            if aimbotData.FOVring then
-                aimbotData.FOVring.Color = selectedColor
-            end
-        end
-    end
-}):AddKeyPicker("AimKeyPicker", {
-    Text = "自瞄幸存者",
-    Default = "E",
-    Mode = "Toggle",
-    SyncToggleState = true,
-})
-
--- 杀手自瞄
-local HH = Tabs.Aimbot:AddRightGroupbox("自瞄杀手(XuanC)")
-
-local aimSettings = {
-    distance = 100,
-    fov = 100,
-    size = 10,
-    noWall = false,
-    rainbowMode = true 
-}
-
-local aimbotData = {
-    FOVring = nil,
-    connections = {}
-}
-
-HH:AddSlider('AimDistance', {
-    Text = '自瞄距离',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.distance = Value
-    end
-})
-
-HH:AddSlider('FOVSize', {
-    Text = '圈圈大小',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.fov = Value
-    end
-})
-
-HH:AddSlider('TargetSize', {
-    Text = '自瞄大小',
-    Default = 10,
-    Min = 0,
-    Max = 100,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.size = Value
-    end
-})
-
-HH:AddToggle('NoWallToggle', {
-    Text = '掩体检测',
-    Default = false,
-    Tooltip = '自瞄',
-    Callback = function(state)
-        aimSettings.noWall = state
-    end
-})
-
-HH:AddDropdown('ColorSelector', {
-    Values = {
-        'Red',
-        'Green',
-        'Blue',
-        'White',
-        'Yellow',
-        'Cyan',
-        'Magenta',
-        'Rainbow'
-    },
-    Default = 8,
-    Multi = false,
-    Text = '选择颜色',
-    Tooltip = '用于自瞄圈圈的颜色',
-    Callback = function(Value)
-        local colorMap = {
-            Red = Color3.fromRGB(255, 0, 0),
-            Green = Color3.fromRGB(0, 255, 0),
-            Blue = Color3.fromRGB(0, 0, 255),
-            White = Color3.fromRGB(255, 255, 255),
-            Yellow = Color3.fromRGB(255, 255, 0),
-            Cyan = Color3.fromRGB(0, 255, 255),
-            Magenta = Color3.fromRGB(255, 0, 255)
-        }
-
-        if Value == 'Rainbow' then
-            aimSettings.rainbowMode = true
-        else
-            aimSettings.rainbowMode = false
-            local selectedColor = colorMap[Value] or Color3.fromRGB(231, 231, 236)
-            if aimbotData.FOVring then
-                aimbotData.FOVring.Color = selectedColor
-            end
-        end
-    end
-}):AddKeyPicker("AimKeyPicker", {
-    Text = "自瞄幸存者",
-    Default = "E",
-    Mode = "Toggle",
-    SyncToggleState = true,
-})
-
--- 杀手自瞄
-local HH = Tabs.Aimbot:AddRightGroupbox("自瞄杀手(XuanC)")
-
-local aimSettings = {
-    distance = 100,
-    fov = 100,
-    size = 10,
-    noWall = false,
-    rainbowMode = true 
-}
-
-local aimbotData = {
-    FOVring = nil,
-    connections = {}
-}
-
-HH:AddSlider('AimDistance', {
-    Text = '自瞄距离',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.distance = Value
-    end
-})
-
-HH:AddSlider('FOVSize', {
-    Text = '圈圈大小',
-    Default = 100,
-    Min = 0,
-    Max = 1000,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.fov = Value
-    end
-})
-
-HH:AddSlider('TargetSize', {
-    Text = '自瞄大小',
-    Default = 10,
-    Min = 0,
-    Max = 100,
-    Rounding = 0,
-    Compact = false,
-    Callback = function(Value)
-        aimSettings.size = Value
-    end
-})
-
-HH:AddToggle('NoWallToggle', {
-    Text = '掩体检测',
-    Default = false,
-    Tooltip = '自瞄',
-    Callback = function(state)
-        aimSettings.noWall = state
-    end
-})
-
-HH:AddDropdown('ColorSelector', {
-    Values = {
-        'Red',
-        'Green',
-        'Blue',
-        'White',
-        'Yellow',
-        'Cyan',
-        'Magenta',
-        'Rainbow'
-    },
-    Default = 8,
-    Multi = false,
-    Text = '选择颜色',
-    Tooltip = '用于自瞄圈圈的颜色',
-    Callback = function(Value)
-        local colorMap = {
-            Red = Color3.fromRGB(255, 0, 0),
-            Green = Color3.fromRGB(0, 255, 0),
-            Blue = Color3.fromRGB(0, 0, 255),
-            White = Color3.fromRGB(255, 255, 255),
-            Yellow = Color3.fromRGB(255, 255, 0),
-            Cyan = Color3.fromRGB(0, 255, 255),
-            Magenta = Color3.fromRGB(255, 0, 255)
-        }
-
-        if Value == 'Rainbow' then
-            aimSettings.rainbowMode = true
-        else
-            aimSettings.rainbowMode = false
-            local selectedColor = colorMap[Value] or Color3.fromRGB(231, 231, 236)
-            if aimbotData.FOVring then
-                aimbotData.FOVring.Color = selectedColor
-            end
         end
     end
 }):AddKeyPicker("AimKeyPicker", {
@@ -1842,3 +1446,3092 @@ SpecialAimbot:AddToggle("GAA",{
         AimAttackGuest(v)
     end
 })
+
+local Visual = Tabs.Esp:AddRightGroupbox("距离显示")
+
+-- 初始化设置
+local DistanceSettings = {
+    ShowSurvivors = true,
+    ShowKillers = true,
+    SurvivorColor = Color3.fromRGB(0, 191, 255), -- 默认幸存者蓝色
+    KillerColor = Color3.fromRGB(255, 0, 0),     -- 默认杀手红色
+    TextSize = 14
+}
+
+-- 距离显示功能
+local function updateDistanceDisplay()
+    -- 先关闭现有连接
+    if getgenv().distanceUnderFeetConnection then
+        getgenv().distanceUnderFeetConnection:Disconnect()
+    end
+    
+    if getgenv().characterRemovedConnection then
+        getgenv().characterRemovedConnection:Disconnect()
+    end
+    
+    -- 如果两个都关闭则完全禁用
+    if not DistanceSettings.ShowSurvivors and not DistanceSettings.ShowKillers then
+        if getgenv().distanceUnderFeetLabels then
+            for _, data in pairs(getgenv().distanceUnderFeetLabels) do
+                pcall(function() data.label:Remove() end)
+            end
+            getgenv().distanceUnderFeetLabels = nil
+        end
+        return
+    end
+    
+    -- 初始化变量
+    local players = game:GetService("Players")
+    local runService = game:GetService("RunService")
+    local localPlayer = players.LocalPlayer
+    local camera = workspace.CurrentCamera
+    
+    -- 存储所有距离标签
+    getgenv().distanceUnderFeetLabels = getgenv().distanceUnderFeetLabels or {}
+    
+    -- 主循环
+    getgenv().distanceUnderFeetConnection = runService.RenderStepped:Connect(function()
+        local localChar = localPlayer.Character
+        if not localChar or not localChar:FindFirstChild("HumanoidRootPart") then return end
+        
+        local localPos = localChar.HumanoidRootPart.Position
+        
+        -- 处理幸存者
+        if DistanceSettings.ShowSurvivors then
+            local survivors = workspace.Players:FindFirstChild("Survivors")
+            if survivors then
+                for _, survivor in ipairs(survivors:GetChildren()) do
+                    if survivor:IsA("Model") and survivor ~= localChar then
+                        local hrp = survivor:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            if not getgenv().distanceUnderFeetLabels[survivor] then
+                                getgenv().distanceUnderFeetLabels[survivor] = {
+                                    label = Drawing.new("Text"),
+                                    type = "Survivor"
+                                }
+                                local label = getgenv().distanceUnderFeetLabels[survivor].label
+                                label.Size = DistanceSettings.TextSize
+                                label.Center = true
+                                label.Outline = true
+                                label.Font = 2
+                            end
+                            
+                            local data = getgenv().distanceUnderFeetLabels[survivor]
+                            local distance = math.floor((hrp.Position - localPos).Magnitude)
+                            local screenPos, onScreen = camera:WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+                            
+                            if onScreen then
+                                data.label.Position = Vector2.new(screenPos.X, screenPos.Y)
+                                data.label.Text = tostring(distance) .. "m"
+                                data.label.Color = DistanceSettings.SurvivorColor
+                                data.label.Visible = true
+                            else
+                                data.label.Visible = false
+                            end
+                        end
+                    end
+                end
+            end
+        else
+            -- 隐藏所有幸存者标签
+            for model, data in pairs(getgenv().distanceUnderFeetLabels or {}) do
+                if data.type == "Survivor" then
+                    data.label.Visible = false
+                end
+            end
+        end
+        
+        -- 处理杀手
+        if DistanceSettings.ShowKillers then
+            local killers = workspace.Players:FindFirstChild("Killers")
+            if killers then
+                for _, killer in ipairs(killers:GetChildren()) do
+                    if killer:IsA("Model") then
+                        local hrp = killer:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            if not getgenv().distanceUnderFeetLabels[killer] then
+                                getgenv().distanceUnderFeetLabels[killer] = {
+                                    label = Drawing.new("Text"),
+                                    type = "Killer"
+                                }
+                                local label = getgenv().distanceUnderFeetLabels[killer].label
+                                label.Size = DistanceSettings.TextSize
+                                label.Center = true
+                                label.Outline = true
+                                label.Font = 2
+                            end
+                            
+                            local data = getgenv().distanceUnderFeetLabels[killer]
+                            local distance = math.floor((hrp.Position - localPos).Magnitude)
+                            local screenPos, onScreen = camera:WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+                            
+                            if onScreen then
+                                data.label.Position = Vector2.new(screenPos.X, screenPos.Y)
+                                data.label.Text = tostring(distance) .. "m"
+                                data.label.Color = DistanceSettings.KillerColor
+                                data.label.Visible = true
+                            else
+                                data.label.Visible = false
+                            end
+                        end
+                    end
+                end
+            end
+        else
+            -- 隐藏所有杀手标签
+            for model, data in pairs(getgenv().distanceUnderFeetLabels or {}) do
+                if data.type == "Killer" then
+                    data.label.Visible = false
+                end
+            end
+        end
+    end)
+    
+    -- 监听角色移除
+    getgenv().characterRemovedConnection = workspace.Players.DescendantRemoving:Connect(function(descendant)
+        if descendant:IsA("Model") and getgenv().distanceUnderFeetLabels and getgenv().distanceUnderFeetLabels[descendant] then
+            getgenv().distanceUnderFeetLabels[descendant].label:Remove()
+            getgenv().distanceUnderFeetLabels[descendant] = nil
+        end
+    end)
+end
+
+-- 主开关
+Visual:AddToggle("DistanceUnderFeet", {
+    Text = "绘制距离总开关",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            updateDistanceDisplay()
+        else
+            -- 完全关闭
+            if getgenv().distanceUnderFeetConnection then
+                getgenv().distanceUnderFeetConnection:Disconnect()
+            end
+            
+            if getgenv().characterRemovedConnection then
+                getgenv().characterRemovedConnection:Disconnect()
+            end
+            
+            if getgenv().distanceUnderFeetLabels then
+                for _, data in pairs(getgenv().distanceUnderFeetLabels) do
+                    pcall(function() data.label:Remove() end)
+                end
+                getgenv().distanceUnderFeetLabels = nil
+            end
+        end
+    end
+})
+Visual:AddDivider()  
+-- 幸存者开关
+Visual:AddToggle("ShowSurvivors", {
+    Text = "绘制幸存者距离",
+    Default = true,
+    Callback = function(enabled)
+        DistanceSettings.ShowSurvivors = enabled
+        if getgenv().distanceUnderFeetConnection then
+            updateDistanceDisplay()
+        end
+    end
+})
+
+-- 杀手开关
+Visual:AddToggle("ShowKillers", {
+    Text = "绘制杀手距离",
+    Default = true,
+    Callback = function(enabled)
+        DistanceSettings.ShowKillers = enabled
+        if getgenv().distanceUnderFeetConnection then
+            updateDistanceDisplay()
+        end
+    end
+})
+
+-- 颜色设置
+Visual:AddDropdown("SurvivorColor", {
+    Values = {"蓝色", "绿色", "黄色", "紫色", "青色"},
+    Default = 1,
+    Text = "幸存者颜色",
+    Callback = function(value)
+        local colorMap = {
+            ["蓝色"] = Color3.fromRGB(0, 191, 255),
+            ["绿色"] = Color3.fromRGB(0, 255, 0),
+            ["黄色"] = Color3.fromRGB(255, 255, 0),
+            ["紫色"] = Color3.fromRGB(128, 0, 128),
+            ["青色"] = Color3.fromRGB(0, 255, 255)
+        }
+        
+        DistanceSettings.SurvivorColor = colorMap[value] or Color3.fromRGB(0, 191, 255)
+        if getgenv().distanceUnderFeetLabels then
+            for _, data in pairs(getgenv().distanceUnderFeetLabels) do
+                if data.type == "Survivor" then
+                    data.label.Color = DistanceSettings.SurvivorColor
+                end
+            end
+        end
+    end
+})
+
+Visual:AddDropdown("KillerColor", {
+    Values = {"红色", "橙色", "粉色", "白色", "黑色"},
+    Default = 1,
+    Text = "杀手颜色",
+    Callback = function(value)
+        local colorMap = {
+            ["红色"] = Color3.fromRGB(255, 0, 0),
+            ["橙色"] = Color3.fromRGB(255, 165, 0),
+            ["粉色"] = Color3.fromRGB(255, 192, 203),
+            ["白色"] = Color3.fromRGB(255, 255, 255),
+            ["黑色"] = Color3.fromRGB(0, 0, 0)
+        }
+        
+        DistanceSettings.KillerColor = colorMap[value] or Color3.fromRGB(255, 0, 0)
+        if getgenv().distanceUnderFeetLabels then
+            for _, data in pairs(getgenv().distanceUnderFeetLabels) do
+                if data.type == "Killer" then
+                    data.label.Color = DistanceSettings.KillerColor
+                end
+            end
+        end
+    end
+})
+
+-- 文字大小设置
+Visual:AddSlider("DistanceTextSize", {
+    Text = "文字大小",
+    Min = 8,
+    Max = 24,
+    Default = 14,
+    Rounding = 0,
+    Callback = function(value)
+        DistanceSettings.TextSize = value
+        if getgenv().distanceUnderFeetLabels then
+            for _, data in pairs(getgenv().distanceUnderFeetLabels) do
+                data.label.Size = value
+            end
+        end
+    end
+})
+
+Visual:AddDivider()  
+
+
+local Visual = Tabs.Esp:AddRightGroupbox("高亮绘制")
+
+-- 高亮绘制设置
+local HighlightSettings = {
+    ShowSurvivorHighlights = true,
+    ShowKillerHighlights = true,
+    FillTransparency = 0.5,
+    OutlineTransparency = 0,
+    connection = nil,
+    highlights = {}  -- 存储所有高亮对象
+}
+
+-- 更新颜色预设
+HighlightSettings.SurvivorColors = {
+    ["绿色"] = Color3.fromRGB(0, 255, 0),
+    ["白色"] = Color3.fromRGB(255, 255, 255),
+    ["紫色"] = Color3.fromRGB(128, 0, 128),
+    ["青色"] = Color3.fromRGB(0, 255, 255),
+    ["橙色"] = Color3.fromRGB(255, 165, 0),
+    ["柠檬绿"] = Color3.fromRGB(173, 255, 47)  -- 新增柠檬绿
+}
+
+HighlightSettings.KillerColors = {
+    ["红色"] = Color3.fromRGB(255, 0, 0),
+    ["粉色"] = Color3.fromRGB(255, 105, 180),
+    ["黑色"] = Color3.fromRGB(0, 0, 0),
+    ["蓝色"] = Color3.fromRGB(0, 0, 255),
+    ["猩红色"] = Color3.fromRGB(220, 20, 60),  -- 新增猩红色
+    ["杏色"] = Color3.fromRGB(251, 206, 177)   -- 新增杏色
+}
+
+-- 边缘颜色使用与填充颜色相同的选项
+HighlightSettings.SurvivorOutlineColors = table.clone(HighlightSettings.SurvivorColors)
+HighlightSettings.KillerOutlineColors = table.clone(HighlightSettings.KillerColors)
+
+-- 默认颜色
+HighlightSettings.SelectedSurvivorColor = "青色"
+HighlightSettings.SelectedKillerColor = "红色"
+HighlightSettings.SelectedSurvivorOutlineColor = "青色"
+HighlightSettings.SelectedKillerOutlineColor = "红色"
+
+-- 清理高亮对象
+local function cleanupHighlights()
+    for _, highlight in pairs(HighlightSettings.highlights) do
+        if highlight and highlight.Parent then
+            highlight:Destroy()
+        end
+    end
+    HighlightSettings.highlights = {}
+end
+
+-- 更新高亮显示
+local function updateHighlights()
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    
+    -- 获取幸存者和杀手文件夹
+    local survivorsFolder = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Survivors")
+    local killersFolder = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers")
+    
+    -- 只处理幸存者和杀手
+    local function processFolder(folder, isKiller)
+        if not folder then return end
+        
+        for _, model in ipairs(folder:GetChildren()) do
+            if model:IsA("Model") then
+                -- 确定颜色
+                local fillColor = isKiller and HighlightSettings.KillerColors[HighlightSettings.SelectedKillerColor] 
+                                          or HighlightSettings.SurvivorColors[HighlightSettings.SelectedSurvivorColor]
+                
+                local outlineColor = isKiller and HighlightSettings.KillerOutlineColors[HighlightSettings.SelectedKillerOutlineColor] 
+                                              or HighlightSettings.SurvivorOutlineColors[HighlightSettings.SelectedSurvivorOutlineColor]
+                
+                -- 根据设置决定是否显示
+                if (isKiller and HighlightSettings.ShowKillerHighlights) or 
+                   (not isKiller and HighlightSettings.ShowSurvivorHighlights) then
+                    
+                    if not HighlightSettings.highlights[model] then
+                        local highlight = Instance.new("Highlight")
+                        highlight.Parent = game.CoreGui
+                        HighlightSettings.highlights[model] = highlight
+                    end
+                    
+                    local highlight = HighlightSettings.highlights[model]
+                    highlight.Adornee = model
+                    highlight.FillColor = fillColor
+                    highlight.OutlineColor = outlineColor
+                    highlight.FillTransparency = HighlightSettings.FillTransparency
+                    highlight.OutlineTransparency = HighlightSettings.OutlineTransparency
+                elseif HighlightSettings.highlights[model] then
+                    HighlightSettings.highlights[model].Adornee = nil
+                end
+            end
+        end
+    end
+    
+    -- 处理幸存者
+    processFolder(survivorsFolder, false)
+    
+    -- 处理杀手
+    processFolder(killersFolder, true)
+    
+    -- 清理不再存在的模型的高亮
+    for model, highlight in pairs(HighlightSettings.highlights) do
+        if not model or not model.Parent then
+            highlight:Destroy()
+            HighlightSettings.highlights[model] = nil
+        end
+    end
+end
+
+-- 主开关
+Visual:AddToggle("HighlightToggle", {
+    Text = "启用高亮绘制",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- 初始化连接
+            if not HighlightSettings.connection then
+                HighlightSettings.connection = game:GetService("RunService").RenderStepped:Connect(updateHighlights)
+            end
+        else
+            -- 关闭连接
+            if HighlightSettings.connection then
+                HighlightSettings.connection:Disconnect()
+                HighlightSettings.connection = nil
+            end
+            -- 清理高亮对象
+            cleanupHighlights()
+        end
+    end
+})
+
+-- 幸存者开关
+Visual:AddToggle("ShowSurvivorHighlights", {
+    Text = "绘制幸存者高亮",
+    Default = true,
+    Callback = function(enabled)
+        HighlightSettings.ShowSurvivorHighlights = enabled
+    end
+})
+
+-- 杀手开关
+Visual:AddToggle("ShowKillerHighlights", {
+    Text = "绘制杀手高亮",
+    Default = true,
+    Callback = function(enabled)
+        HighlightSettings.ShowKillerHighlights = enabled
+    end
+})
+
+-- 幸存者填充颜色选择
+Visual:AddDropdown("SurvivorFillColor", {
+    Values = {"绿色", "白色", "紫色", "青色", "橙色", "柠檬绿"},
+    Default = "青色",
+    Text = "幸存者填充颜色",
+    Callback = function(value)
+        HighlightSettings.SelectedSurvivorColor = value
+    end
+})
+
+-- 杀手填充颜色选择
+Visual:AddDropdown("KillerFillColor", {
+    Values = {"红色", "粉色", "黑色", "蓝色", "猩红色", "杏色"},
+    Default = "红色",
+    Text = "杀手填充颜色",
+    Callback = function(value)
+        HighlightSettings.SelectedKillerColor = value
+    end
+})
+
+-- 幸存者边缘颜色选择
+Visual:AddDropdown("SurvivorOutlineColor", {
+    Values = {"绿色", "白色", "紫色", "青色", "橙色", "柠檬绿"},
+    Default = "青色",
+    Text = "幸存者边缘颜色",
+    Callback = function(value)
+        HighlightSettings.SelectedSurvivorOutlineColor = value
+    end
+})
+
+-- 杀手边缘颜色选择
+Visual:AddDropdown("KillerOutlineColor", {
+    Values = {"红色", "粉色", "黑色", "蓝色", "猩红色", "杏色"},
+    Default = "黑色",
+    Text = "杀手边缘颜色",
+    Callback = function(value)
+        HighlightSettings.SelectedKillerOutlineColor = value
+    end
+})
+
+-- 填充透明度调节滑块
+Visual:AddSlider("FillTransparency", {
+    Text = "填充透明度",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
+    Rounding = 1,
+    Compact = false,
+    Callback = function(value)
+        HighlightSettings.FillTransparency = value
+    end
+})
+
+-- 边缘透明度调节滑块
+Visual:AddSlider("OutlineTransparency", {
+    Text = "边缘透明度",
+    Min = 0,
+    Max = 1,
+    Default = 0,
+    Rounding = 1,
+    Compact = false,
+    Callback = function(value)
+        HighlightSettings.OutlineTransparency = value
+    end
+})
+
+
+local Visual = Tabs.Esp:AddLeftGroupbox("血量条绘制")
+
+-- 血量条设置
+local HealthBarSettings = {
+    ShowSurvivorBars = true,
+    ShowKillerBars = true,
+    BarWidth = 100,      -- 固定宽度
+    BarHeight = 5,       -- 固定高度
+    TextSize = 14,       -- 固定文字大小
+    BarOffset = Vector2.new(0, -30), -- 基础偏移
+    TextOffset = Vector2.new(0, -40)  -- 文字偏移
+}
+
+-- 预设颜色方案（修改后的幸存者颜色）
+local ColorPresets = {
+    Survivor = {
+        FullHealth = Color3.fromRGB(0, 255, 255),    -- 青色(满血)
+        HalfHealth = Color3.fromRGB(0, 255, 0),      -- 绿色(半血)
+        LowHealth = Color3.fromRGB(255, 165, 0)      -- 橙色(低血)
+    },
+    Killer = {
+        FullHealth = Color3.fromRGB(255, 0, 0),      -- 红色(满血)
+        HalfHealth = Color3.fromRGB(255, 165, 0),    -- 橙色(半血)
+        LowHealth = Color3.fromRGB(255, 255, 0)      -- 黄色(低血)
+    },
+    Common = {
+        Background = Color3.fromRGB(50, 50, 50),
+        Outline = Color3.fromRGB(0, 0, 0),
+        Text = Color3.fromRGB(255, 255, 255)        -- 白色文字
+    }
+}
+
+-- 存储所有绘制对象
+local HealthBarDrawings = {}
+
+-- 创建血量条绘制对象
+local function createHealthBarDrawing()
+    local drawing = {
+        background = Drawing.new("Square"),
+        bar = Drawing.new("Square"),
+        outline = Drawing.new("Square"),
+        text = Drawing.new("Text")
+    }
+    
+    -- 背景设置
+    drawing.background.Thickness = 1
+    drawing.background.Filled = true
+    drawing.background.Color = ColorPresets.Common.Background
+    
+    -- 血量条设置
+    drawing.bar.Thickness = 1
+    drawing.bar.Filled = true
+    
+    -- 边框设置
+    drawing.outline.Thickness = 2
+    drawing.outline.Filled = false
+    drawing.outline.Color = ColorPresets.Common.Outline
+    
+    -- 文字设置
+    drawing.text.Center = true
+    drawing.text.Outline = true
+    drawing.text.Font = 2
+    drawing.text.Color = ColorPresets.Common.Text
+    
+    return drawing
+end
+
+-- 根据血量获取颜色（修改后的阈值）
+local function getHealthColor(humanoid, isKiller)
+    local healthPercent = (humanoid.Health / humanoid.MaxHealth) * 100
+    
+    if isKiller then
+        if healthPercent > 50 then
+            return ColorPresets.Killer.FullHealth
+        elseif healthPercent > 25 then
+            return ColorPresets.Killer.HalfHealth
+        else
+            return ColorPresets.Killer.LowHealth
+        end
+    else
+        -- 幸存者新颜色阈值
+        if healthPercent > 75 then
+            return ColorPresets.Survivor.FullHealth    -- 满血(75%以上): 青色
+        elseif healthPercent > 35 then
+            return ColorPresets.Survivor.HalfHealth    -- 半血(35%-75%): 绿色
+        else
+            return ColorPresets.Survivor.LowHealth     -- 低血(35%以下): 橙色
+        end
+    end
+end
+
+-- 更新血量条（优化后不显示自身血条）
+local function updateHealthBars()
+    local camera = workspace.CurrentCamera
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    
+    -- 处理幸存者
+    if HealthBarSettings.ShowSurvivorBars then
+        local survivors = workspace.Players:FindFirstChild("Survivors")
+        if survivors then
+            for _, survivor in ipairs(survivors:GetChildren()) do
+                if survivor:IsA("Model") and survivor ~= localPlayer.Character then  -- 不显示自身血条
+                    local humanoid = survivor:FindFirstChildOfClass("Humanoid")
+                    local head = survivor:FindFirstChild("Head")
+                    
+                    if humanoid and head then
+                        -- 获取或创建绘制对象
+                        if not HealthBarDrawings[survivor] then
+                            HealthBarDrawings[survivor] = createHealthBarDrawing()
+                        end
+                        
+                        local drawing = HealthBarDrawings[survivor]
+                        local screenPos, onScreen = camera:WorldToViewportPoint(head.Position)
+                        
+                        if onScreen then
+                            -- 计算血量百分比
+                            local healthPercent = math.floor((humanoid.Health / humanoid.MaxHealth) * 100)
+                            local healthBarWidth = HealthBarSettings.BarWidth * (healthPercent / 100)
+                            
+                            -- 设置位置
+                            local barPos = Vector2.new(
+                                screenPos.X + HealthBarSettings.BarOffset.X - (HealthBarSettings.BarWidth / 2),
+                                screenPos.Y + HealthBarSettings.BarOffset.Y
+                            )
+                            
+                            -- 背景和边框
+                            drawing.background.Size = Vector2.new(HealthBarSettings.BarWidth, HealthBarSettings.BarHeight)
+                            drawing.background.Position = barPos
+                            drawing.background.Visible = true
+                            
+                            drawing.outline.Size = Vector2.new(HealthBarSettings.BarWidth, HealthBarSettings.BarHeight)
+                            drawing.outline.Position = barPos
+                            drawing.outline.Visible = true
+                            
+                            -- 血量条（使用新颜色方案）
+                            drawing.bar.Color = getHealthColor(humanoid, false)
+                            drawing.bar.Size = Vector2.new(healthBarWidth, HealthBarSettings.BarHeight)
+                            drawing.bar.Position = barPos
+                            drawing.bar.Visible = true
+                            
+                            -- 文字
+                            drawing.text.Text = tostring(healthPercent) .. "%"
+                            drawing.text.Size = HealthBarSettings.TextSize
+                            drawing.text.Position = Vector2.new(
+                                screenPos.X + HealthBarSettings.TextOffset.X,
+                                screenPos.Y + HealthBarSettings.TextOffset.Y
+                            )
+                            drawing.text.Visible = true
+                        else
+                            -- 不在屏幕内则隐藏
+                            for _, obj in pairs(drawing) do
+                                obj.Visible = false
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    -- 处理杀手
+    if HealthBarSettings.ShowKillerBars then
+        local killers = workspace.Players:FindFirstChild("Killers")
+        if killers then
+            for _, killer in ipairs(killers:GetChildren()) do
+                if killer:IsA("Model") then
+                    local humanoid = killer:FindFirstChildOfClass("Humanoid")
+                    local head = killer:FindFirstChild("Head")
+                    
+                    if humanoid and head then
+                        -- 获取或创建绘制对象
+                        if not HealthBarDrawings[killer] then
+                            HealthBarDrawings[killer] = createHealthBarDrawing()
+                        end
+                        
+                        local drawing = HealthBarDrawings[killer]
+                        local screenPos, onScreen = camera:WorldToViewportPoint(head.Position)
+                        
+                        if onScreen then
+                            -- 计算血量百分比
+                            local healthPercent = math.floor((humanoid.Health / humanoid.MaxHealth) * 100)
+                            local healthBarWidth = HealthBarSettings.BarWidth * (healthPercent / 100)
+                            
+                            -- 设置位置
+                            local barPos = Vector2.new(
+                                screenPos.X + HealthBarSettings.BarOffset.X - (HealthBarSettings.BarWidth / 2),
+                                screenPos.Y + HealthBarSettings.BarOffset.Y
+                            )
+                            
+                            -- 背景和边框
+                            drawing.background.Size = Vector2.new(HealthBarSettings.BarWidth, HealthBarSettings.BarHeight)
+                            drawing.background.Position = barPos
+                            drawing.background.Visible = true
+                            
+                            drawing.outline.Size = Vector2.new(HealthBarSettings.BarWidth, HealthBarSettings.BarHeight)
+                            drawing.outline.Position = barPos
+                            drawing.outline.Visible = true
+                            
+                            -- 血量条
+                            drawing.bar.Color = getHealthColor(humanoid, true)
+                            drawing.bar.Size = Vector2.new(healthBarWidth, HealthBarSettings.BarHeight)
+                            drawing.bar.Position = barPos
+                            drawing.bar.Visible = true
+                            
+                            -- 文字
+                            drawing.text.Text = tostring(healthPercent) .. "%"
+                            drawing.text.Size = HealthBarSettings.TextSize
+                            drawing.text.Position = Vector2.new(
+                                screenPos.X + HealthBarSettings.TextOffset.X,
+                                screenPos.Y + HealthBarSettings.TextOffset.Y
+                            )
+                            drawing.text.Visible = true
+                        else
+                            -- 不在屏幕内则隐藏
+                            for _, obj in pairs(drawing) do
+                                obj.Visible = false
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- 清理血量条
+local function cleanupHealthBars()
+    for _, drawing in pairs(HealthBarDrawings) do
+        for _, obj in pairs(drawing) do
+            if obj then
+                obj:Remove()
+            end
+        end
+    end
+    HealthBarDrawings = {}
+end
+
+-- 主开关
+Visual:AddToggle("HealthBarsToggle", {
+    Text = "启用血量条",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- 初始化连接
+            if not HealthBarSettings.connection then
+                HealthBarSettings.connection = game:GetService("RunService").RenderStepped:Connect(updateHealthBars)
+            end
+            
+            -- 监听角色移除
+            if not HealthBarSettings.removedConnection then
+                HealthBarSettings.removedConnection = workspace.DescendantRemoving:Connect(function(descendant)
+                    if HealthBarDrawings[descendant] then
+                        for _, obj in pairs(HealthBarDrawings[descendant]) do
+                            obj:Remove()
+                        end
+                        HealthBarDrawings[descendant] = nil
+                    end
+                end)
+            end
+        else
+            -- 关闭连接
+            if HealthBarSettings.connection then
+                HealthBarSettings.connection:Disconnect()
+                HealthBarSettings.connection = nil
+            end
+            
+            if HealthBarSettings.removedConnection then
+                HealthBarSettings.removedConnection:Disconnect()
+                HealthBarSettings.removedConnection = nil
+            end
+            
+            -- 清理绘制对象
+            cleanupHealthBars()
+        end
+    end
+})
+
+-- 幸存者开关
+Visual:AddToggle("ShowSurvivorBars", {
+    Text = "显示幸存者血量条",
+    Default = true,
+    Callback = function(enabled)
+        HealthBarSettings.ShowSurvivorBars = enabled
+    end
+})
+
+-- 杀手开关
+Visual:AddToggle("ShowKillerBars", {
+    Text = "显示杀手血量条",
+    Default = true,
+    Callback = function(enabled)
+        HealthBarSettings.ShowKillerBars = enabled
+    end
+})
+
+-- 大小设置
+Visual:AddSlider("BarWidth", {
+    Text = "血量条宽度",
+    Min = 50,
+    Max = 200,
+    Default = 100,
+    Rounding = 0,
+    Callback = function(value)
+        HealthBarSettings.BarWidth = value
+    end
+})
+
+Visual:AddSlider("BarHeight", {
+    Text = "血量条高度",
+    Min = 3,
+    Max = 15,
+    Default = 5,
+    Rounding = 0,
+    Callback = function(value)
+        HealthBarSettings.BarHeight = value
+    end
+})
+
+Visual:AddSlider("TextSize", {
+    Text = "文字大小",
+    Min = 10,
+    Max = 20,
+    Default = 14,
+    Rounding = 0,
+    Callback = function(value)
+        HealthBarSettings.TextSize = value
+    end
+})
+
+-- 位置调整
+Visual:AddSlider("BarOffsetY", {
+    Text = "垂直偏移",
+    Min = -50,
+    Max = 50,
+    Default = -30,
+    Rounding = 0,
+    Callback = function(value)
+        HealthBarSettings.BarOffset = Vector2.new(HealthBarSettings.BarOffset.X, value)
+        HealthBarSettings.TextOffset = Vector2.new(HealthBarSettings.TextOffset.X, value - 10)
+    end
+})
+
+
+
+local Visual = Tabs.Esp:AddRightGroupbox("3D方框绘制")
+
+-- 3D方框绘制设置
+local Box3DSettings = {
+    -- 基本设置
+    Enabled = false,
+    ShowSurvivorBoxes = true,
+    ShowKillerBoxes = true,
+    
+    -- 颜色设置
+    SurvivorColor = Color3.fromRGB(0, 255, 255), -- 青色
+    KillerColor = Color3.fromRGB(255, 0, 0),     -- 红色
+    UseTeamColor = true,
+    
+    -- 样式设置
+    Thickness = 1,
+    Transparency = 0.7,
+    BoxHeightOffset = 0.5,
+    
+    -- 比例设置
+    SurvivorBoxScale = 1.0,
+    KillerBoxScale = 1.2,
+    
+    -- 宽度调节
+    LeftWidthScale = 1.0,
+    RightWidthScale = 1.0,
+    
+    -- 深度调节 (加强版)
+    FrontExtend = 1.0,
+    BackExtend = 1.0,
+    FrontExtendMultiplier = 1.0,  -- 前延伸倍数
+    BackExtendMultiplier = 1.0,   -- 后延伸倍数
+    
+    -- 高度调节
+    HeadOffset = 1.5,
+    FootOffset = 0.2,
+    BoxHeightScale = 1.0,         -- 方框高度比例
+    VerticalOffset = 0,           -- 垂直偏移
+    
+    -- 连接线
+    connection = nil,
+    removedConnection = nil
+}
+
+-- 存储所有3D方框绘制对象
+local Box3DDrawings = {}
+
+-- 创建3D方框绘制对象
+local function create3DBoxDrawing()
+    local drawing = {
+        lines = {},
+        visible = false
+    }
+    
+    for i = 1, 12 do
+        drawing.lines[i] = Drawing.new("Line")
+        drawing.lines[i].Thickness = Box3DSettings.Thickness
+        drawing.lines[i].Transparency = Box3DSettings.Transparency
+        drawing.lines[i].Visible = false
+    end
+    
+    return drawing
+end
+
+-- 计算模型的3D边界框（全方位调节）
+local function calculateModelBoundingBox(model, isKiller)
+    local rootPart = model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Torso") or model:FindFirstChild("UpperTorso")
+    local head = model:FindFirstChild("Head")
+    
+    if rootPart then
+        local size = rootPart.Size
+        local cframe = rootPart.CFrame
+        
+        -- 应用比例调整
+        local scale = isKiller and Box3DSettings.KillerBoxScale or Box3DSettings.SurvivorBoxScale
+        size = size * scale
+        
+        -- 计算基础高度并应用高度比例
+        local baseHeight = 5
+        if head then
+            baseHeight = (head.Position.Y - rootPart.Position.Y) * 2
+        end
+        local height = (baseHeight + Box3DSettings.HeadOffset + Box3DSettings.FootOffset) * Box3DSettings.BoxHeightScale
+        
+        -- 调整左右宽度
+        local leftOffset = (size.X/2) * Box3DSettings.LeftWidthScale
+        local rightOffset = (size.X/2) * Box3DSettings.RightWidthScale
+        
+        -- 调整前后延伸 (加强版)
+        local frontOffset = (size.Z/2) * Box3DSettings.FrontExtend * Box3DSettings.FrontExtendMultiplier
+        local backOffset = (size.Z/2) * Box3DSettings.BackExtend * Box3DSettings.BackExtendMultiplier
+        
+        -- 计算最小和最大点
+        local min = Vector3.new(
+            cframe.Position.X - leftOffset,
+            cframe.Position.Y - height/2 + Box3DSettings.FootOffset,
+            cframe.Position.Z - backOffset
+        )
+        
+        local max = Vector3.new(
+            cframe.Position.X + rightOffset,
+            cframe.Position.Y + height/2 + Box3DSettings.HeadOffset,
+            cframe.Position.Z + frontOffset
+        )
+        
+        -- 应用高度偏移和垂直偏移
+        min = Vector3.new(min.X, min.Y + Box3DSettings.BoxHeightOffset + Box3DSettings.VerticalOffset, min.Z)
+        max = Vector3.new(max.X, max.Y + Box3DSettings.BoxHeightOffset + Box3DSettings.VerticalOffset, max.Z)
+        
+        return min, max
+    else
+        -- 回退到遍历所有部件的方法
+        local min = Vector3.new(math.huge, math.huge, math.huge)
+        local max = Vector3.new(-math.huge, -math.huge, -math.huge)
+        
+        for _, part in ipairs(model:GetDescendants()) do
+            if part:IsA("BasePart") then
+                local cframe = part.CFrame
+                local size = part.Size
+                
+                local scale = isKiller and Box3DSettings.KillerBoxScale or Box3DSettings.SurvivorBoxScale
+                size = size * scale
+                
+                -- 调整左右宽度
+                local leftOffset = (size.X/2) * Box3DSettings.LeftWidthScale
+                local rightOffset = (size.X/2) * Box3DSettings.RightWidthScale
+                
+                -- 调整前后延伸 (加强版)
+                local frontOffset = (size.Z/2) * Box3DSettings.FrontExtend * Box3DSettings.FrontExtendMultiplier
+                local backOffset = (size.Z/2) * Box3DSettings.BackExtend * Box3DSettings.BackExtendMultiplier
+                
+                -- 计算顶点（考虑前后延伸）
+                local vertices = {
+                    cframe * Vector3.new(rightOffset, (size.Y/2) * Box3DSettings.BoxHeightScale, frontOffset),
+                    cframe * Vector3.new(-leftOffset, (size.Y/2) * Box3DSettings.BoxHeightScale, frontOffset),
+                    cframe * Vector3.new(rightOffset, (-size.Y/2) * Box3DSettings.BoxHeightScale, frontOffset),
+                    cframe * Vector3.new(-leftOffset, (-size.Y/2) * Box3DSettings.BoxHeightScale, frontOffset),
+                    cframe * Vector3.new(rightOffset, (size.Y/2) * Box3DSettings.BoxHeightScale, -backOffset),
+                    cframe * Vector3.new(-leftOffset, (size.Y/2) * Box3DSettings.BoxHeightScale, -backOffset),
+                    cframe * Vector3.new(rightOffset, (-size.Y/2) * Box3DSettings.BoxHeightScale, -backOffset),
+                    cframe * Vector3.new(-leftOffset, (-size.Y/2) * Box3DSettings.BoxHeightScale, -backOffset)
+                }
+                
+                -- 更新最小和最大点
+                for _, vertex in ipairs(vertices) do
+                    min = Vector3.new(
+                        math.min(min.X, vertex.X),
+                        math.min(min.Y, vertex.Y),
+                        math.min(min.Z, vertex.Z)
+                    )
+                    max = Vector3.new(
+                        math.max(max.X, vertex.X),
+                        math.max(max.Y, vertex.Y),
+                        math.max(max.Z, vertex.Z)
+                    )
+                end
+            end
+        end
+        
+        -- 应用高度偏移和垂直偏移
+        min = Vector3.new(min.X, min.Y + Box3DSettings.BoxHeightOffset + Box3DSettings.VerticalOffset, min.Z)
+        max = Vector3.new(max.X, max.Y + Box3DSettings.BoxHeightOffset + Box3DSettings.VerticalOffset, max.Z)
+        
+        return min, max
+    end
+end
+
+-- 更新单个3D方框
+local function updateSingle3DBox(model, drawing, color, isKiller)
+    local camera = workspace.CurrentCamera
+    local min, max = calculateModelBoundingBox(model, isKiller)
+    
+    -- 计算立方体的8个顶点
+    local vertices = {
+        Vector3.new(max.X, max.Y, max.Z), -- 右上后
+        Vector3.new(min.X, max.Y, max.Z), -- 左上后
+        Vector3.new(max.X, min.Y, max.Z), -- 右下后
+        Vector3.new(min.X, min.Y, max.Z), -- 左下后
+        Vector3.new(max.X, max.Y, min.Z), -- 右上前
+        Vector3.new(min.X, max.Y, min.Z), -- 左上前
+        Vector3.new(max.X, min.Y, min.Z), -- 右下前
+        Vector3.new(min.X, min.Y, min.Z)  -- 左下前
+    }
+    
+    -- 转换顶点到屏幕空间
+    local screenVertices = {}
+    local anyVisible = false
+    
+    for i, vertex in ipairs(vertices) do
+        local screenPos, onScreen = camera:WorldToViewportPoint(vertex)
+        screenVertices[i] = Vector2.new(screenPos.X, screenPos.Y)
+        if onScreen then anyVisible = true end
+    end
+    
+    -- 设置线条属性
+    for _, line in pairs(drawing.lines) do
+        line.Color = color
+        line.Thickness = Box3DSettings.Thickness
+        line.Transparency = Box3DSettings.Transparency
+    end
+    
+    -- 绘制立方体边线
+    if anyVisible then
+        -- 前面4条边
+        drawing.lines[1].From = screenVertices[5] drawing.lines[1].To = screenVertices[6] -- 上面前
+        drawing.lines[2].From = screenVertices[6] drawing.lines[2].To = screenVertices[8] -- 左边前
+        drawing.lines[3].From = screenVertices[8] drawing.lines[3].To = screenVertices[7] -- 下面前
+        drawing.lines[4].From = screenVertices[7] drawing.lines[4].To = screenVertices[5] -- 右边前
+        
+        -- 后面4条边
+        drawing.lines[5].From = screenVertices[1] drawing.lines[5].To = screenVertices[2] -- 上面后
+        drawing.lines[6].From = screenVertices[2] drawing.lines[6].To = screenVertices[4] -- 左边后
+        drawing.lines[7].From = screenVertices[4] drawing.lines[7].To = screenVertices[3] -- 下面后
+        drawing.lines[8].From = screenVertices[3] drawing.lines[8].To = screenVertices[1] -- 右边后
+        
+        -- 连接前后面的4条边
+        drawing.lines[9].From = screenVertices[1] drawing.lines[9].To = screenVertices[5] -- 右上
+        drawing.lines[10].From = screenVertices[2] drawing.lines[10].To = screenVertices[6] -- 左上
+        drawing.lines[11].From = screenVertices[3] drawing.lines[11].To = screenVertices[7] -- 右下
+        drawing.lines[12].From = screenVertices[4] drawing.lines[12].To = screenVertices[8] -- 左下
+        
+        -- 显示所有线条
+        for _, line in pairs(drawing.lines) do
+            line.Visible = true
+        end
+        
+        drawing.visible = true
+    else
+        if drawing.visible then
+            for _, line in pairs(drawing.lines) do
+                line.Visible = false
+            end
+            drawing.visible = false
+        end
+    end
+end
+
+-- 更新所有3D方框
+local function update3DBoxes()
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    local camera = workspace.CurrentCamera
+    
+    -- 先隐藏所有现有的方框
+    for model, drawing in pairs(Box3DDrawings) do
+        if not model or not model.Parent then
+            -- 模型已不存在，清理绘制对象
+            for _, line in pairs(drawing.lines) do
+                line:Remove()
+            end
+            Box3DDrawings[model] = nil
+        else
+            -- 暂时隐藏
+            for _, line in pairs(drawing.lines) do
+                line.Visible = false
+            end
+            drawing.visible = false
+        end
+    end
+    
+    -- 处理幸存者方框
+    if Box3DSettings.ShowSurvivorBoxes then
+        local survivors = workspace:FindFirstChild("Survivors") or workspace.Players:FindFirstChild("Survivors")
+        if survivors then
+            for _, survivor in ipairs(survivors:GetChildren()) do
+                if survivor:IsA("Model") and survivor ~= localPlayer.Character then
+                    -- 获取或创建绘制对象
+                    if not Box3DDrawings[survivor] then
+                        Box3DDrawings[survivor] = create3DBoxDrawing()
+                    end
+                    
+                    updateSingle3DBox(survivor, Box3DDrawings[survivor], Box3DSettings.SurvivorColor, false)
+                end
+            end
+        end
+        
+        -- 额外检查玩家列表中的幸存者
+        for _, player in ipairs(players:GetPlayers()) do
+            if player ~= localPlayer and player.Character and not player.Character:FindFirstChild("IsKiller") then
+                if not Box3DDrawings[player.Character] then
+                    Box3DDrawings[player.Character] = create3DBoxDrawing()
+                end
+                
+                updateSingle3DBox(player.Character, Box3DDrawings[player.Character], Box3DSettings.SurvivorColor, false)
+            end
+        end
+    end
+    
+    -- 处理杀手方框
+    if Box3DSettings.ShowKillerBoxes then
+        local killers = workspace:FindFirstChild("Killers") or workspace.Players:FindFirstChild("Killers")
+        if killers then
+            for _, killer in ipairs(killers:GetChildren()) do
+                if killer:IsA("Model") and killer ~= localPlayer.Character then
+                    -- 获取或创建绘制对象
+                    if not Box3DDrawings[killer] then
+                        Box3DDrawings[killer] = create3DBoxDrawing()
+                    end
+                    
+                    updateSingle3DBox(killer, Box3DDrawings[killer], Box3DSettings.KillerColor, true)
+                end
+            end
+        end
+        
+        -- 额外检查玩家列表中的杀手
+        for _, player in ipairs(players:GetPlayers()) do
+            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("IsKiller") then
+                if not Box3DDrawings[player.Character] then
+                    Box3DDrawings[player.Character] = create3DBoxDrawing()
+                end
+                
+                updateSingle3DBox(player.Character, Box3DDrawings[player.Character], Box3DSettings.KillerColor, true)
+            end
+        end
+    end
+end
+
+-- 清理3D方框
+local function cleanup3DBoxes()
+    for _, drawing in pairs(Box3DDrawings) do
+        if drawing then
+            for _, line in pairs(drawing.lines) do
+                line:Remove()
+            end
+        end
+    end
+    Box3DDrawings = {}
+end
+
+-- 主开关
+Visual:AddToggle("Box3DToggle", {
+    Text = "启用3D方框",
+    Default = false,
+    Callback = function(enabled)
+        Box3DSettings.Enabled = enabled
+        if enabled then
+            -- 初始化连接
+            if not Box3DSettings.connection then
+                Box3DSettings.connection = game:GetService("RunService").RenderStepped:Connect(update3DBoxes)
+            end
+            
+            -- 监听角色移除
+            if not Box3DSettings.removedConnection then
+                Box3DSettings.removedConnection = workspace.DescendantRemoving:Connect(function(descendant)
+                    if Box3DDrawings[descendant] then
+                        for _, line in pairs(Box3DDrawings[descendant].lines) do
+                            line:Remove()
+                        end
+                        Box3DDrawings[descendant] = nil
+                    end
+                end)
+            end
+        else
+            -- 关闭连接
+            if Box3DSettings.connection then
+                Box3DSettings.connection:Disconnect()
+                Box3DSettings.connection = nil
+            end
+            
+            if Box3DSettings.removedConnection then
+                Box3DSettings.removedConnection:Disconnect()
+                Box3DSettings.removedConnection = nil
+            end
+            
+            -- 清理绘制对象
+            cleanup3DBoxes()
+        end
+    end
+})
+
+-- 幸存者开关
+Visual:AddToggle("ShowSurvivorBoxes", {
+    Text = "显示幸存者方框",
+    Default = true,
+    Callback = function(enabled)
+        Box3DSettings.ShowSurvivorBoxes = enabled
+    end
+})
+
+-- 杀手开关
+Visual:AddToggle("ShowKillerBoxes", {
+    Text = "显示杀手方框",
+    Default = true,
+    Callback = function(enabled)
+        Box3DSettings.ShowKillerBoxes = enabled
+    end
+})
+
+-- 样式设置
+Visual:AddSlider("BoxThickness", {
+    Text = "线条粗细",
+    Min = 1,
+    Max = 5,
+    Default = 1,
+    Rounding = 0,
+    Callback = function(value)
+        Box3DSettings.Thickness = value
+    end
+})
+
+Visual:AddSlider("BoxTransparency", {
+    Text = "透明度",
+    Min = 0,
+    Max = 1,
+    Default = 0.7,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.Transparency = value
+    end
+})
+
+Visual:AddSlider("BoxHeightOffset", {
+    Text = "高度偏移",
+    Min = 0,
+    Max = 2,
+    Default = 0.5,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.BoxHeightOffset = value
+    end
+})
+
+
+Visual:AddSlider("BoxHeightScale", {
+    Text = "方框高度比例",
+    Min = 0.5,
+    Max = 2.5,
+    Default = 1.2,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.BoxHeightScale = value
+    end
+})
+
+
+Visual:AddSlider("VerticalOffset", {
+    Text = "垂直偏移",
+    Min = -5,
+    Max = 5,
+    Default = -0.5,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.VerticalOffset = value
+    end
+})
+
+
+Visual:AddSlider("SurvivorBoxScale", {
+    Text = "幸存者方框比例",
+    Min = 1.7,
+    Max = 2,
+    Default = 1.7,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.SurvivorBoxScale = value
+    end
+})
+
+Visual:AddSlider("KillerBoxScale", {
+    Text = "杀手方框比例",
+    Min = 1.7,
+    Max = 2,
+    Default = 1.7,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.KillerBoxScale = value
+    end
+})
+
+Visual:AddSlider("LeftWidthScale", {
+    Text = "左侧宽度比例",
+    Min = 1.0,
+    Max = 2,
+    Default = 1.0,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.LeftWidthScale = value
+    end
+})
+
+Visual:AddSlider("RightWidthScale", {
+    Text = "右侧宽度比例",
+    Min = 0.9,
+    Max = 2,
+    Default = 0.9,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.RightWidthScale = value
+    end
+})
+
+
+Visual:AddSlider("FrontExtend", {
+    Text = "前延伸基础值",
+    Min = 1.9,
+    Max = 2,
+    Default = 1.9,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.FrontExtend = value
+    end
+})
+
+Visual:AddSlider("BackExtend", {
+    Text = "后延伸基础值",
+    Min = 1.8,
+    Max = 2,
+    Default = 1.8,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.BackExtend = value
+    end
+})
+
+Visual:AddSlider("FrontExtendMultiplier", {
+    Text = "前延伸倍数",
+    Min = 1.0,
+    Max = 3.0,
+    Default = 1.0,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.FrontExtendMultiplier = value
+    end
+})
+
+Visual:AddSlider("BackExtendMultiplier", {
+    Text = "后延伸倍数",
+    Min = 1.0,
+    Max = 3.0,
+    Default = 1.0,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.BackExtendMultiplier = value
+    end
+})
+
+-- 高度调节
+Visual:AddSlider("HeadOffset", {
+    Text = "头部偏移",
+    Min = 1.5,
+    Max = 3,
+    Default = 1.5,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.HeadOffset = value
+    end
+})
+
+Visual:AddSlider("FootOffset", {
+    Text = "脚部偏移",
+    Min = 0.2,
+    Max = 1,
+    Default = 0.2,
+    Rounding = 1,
+    Callback = function(value)
+        Box3DSettings.FootOffset = value
+    end
+})
+
+local Visual = Tabs.Esp:AddLeftGroupbox("玩家名称绘制")
+
+-- 名称绘制设置
+local NameTagSettings = {
+    ShowSurvivorNames = true,
+    ShowKillerNames = true,
+    BaseTextSize = 14,
+    MinTextSize = 10,
+    MaxTextSize = 20,
+    TextOffset = Vector3.new(0, 3, 0), -- 头顶上方偏移
+    DistanceScale = {
+        MinDistance = 10,
+        MaxDistance = 50
+    },
+    SurvivorColor = Color3.fromRGB(0, 191, 255), -- 幸存者蓝色
+    KillerColor = Color3.fromRGB(255, 0, 0),     -- 杀手红色
+    OutlineColor = Color3.fromRGB(0, 0, 0),       -- 文字描边颜色
+    ShowDistance = true                          -- 是否显示距离
+}
+
+-- 存储所有名称绘制对象
+local NameTagDrawings = {}
+
+-- 创建名称绘制对象
+local function createNameTagDrawing()
+    local drawing = Drawing.new("Text")
+    drawing.Size = NameTagSettings.BaseTextSize
+    drawing.Center = true
+    drawing.Outline = true
+    drawing.OutlineColor = NameTagSettings.OutlineColor
+    drawing.Font = 2  -- 使用更清晰的字体
+    return drawing
+end
+
+-- 计算头顶位置
+local function getHeadPosition(character)
+    local head = character:FindFirstChild("Head")
+    if head then
+        local headHeight = head.Size.Y
+        return head.Position + Vector3.new(0, headHeight + 0.5, 0)  -- 头顶上方0.5单位
+    end
+    return character:GetPivot().Position
+end
+
+-- 更新名称标签
+local function updateNameTags()
+    local camera = workspace.CurrentCamera
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    local localCharacter = localPlayer.Character
+    local localRoot = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart")
+
+    if not localRoot then return end
+
+    -- 处理幸存者名称
+    if NameTagSettings.ShowSurvivorNames then
+        local survivors = workspace.Players:FindFirstChild("Survivors")
+        if survivors then
+            for _, survivor in ipairs(survivors:GetChildren()) do
+                if survivor:IsA("Model") and survivor ~= localCharacter then
+                    local humanoid = survivor:FindFirstChildOfClass("Humanoid")
+                    
+                    if humanoid and humanoid.Health > 0 then  -- 只显示活着的玩家
+                        -- 获取或创建绘制对象
+                        if not NameTagDrawings[survivor] then
+                            NameTagDrawings[survivor] = createNameTagDrawing()
+                        end
+                        
+                        local drawing = NameTagDrawings[survivor]
+                        local headPos = getHeadPosition(survivor)
+                        local screenPos, onScreen = camera:WorldToViewportPoint(headPos + NameTagSettings.TextOffset)
+                        
+                        if onScreen then
+                            -- 计算距离和缩放比例
+                            local distance = (headPos - localRoot.Position).Magnitude
+                            local scale = math.clamp(
+                                1 - (distance - NameTagSettings.DistanceScale.MinDistance) / 
+                                (NameTagSettings.DistanceScale.MaxDistance - NameTagSettings.DistanceScale.MinDistance), 
+                                0.3, 1  -- 最小缩放0.3倍
+                            )
+                            
+                            -- 动态调整文字大小
+                            local textSize = math.floor(NameTagSettings.BaseTextSize * scale)
+                            textSize = math.clamp(textSize, NameTagSettings.MinTextSize, NameTagSettings.MaxTextSize)
+                            
+                            -- 设置显示文本
+                            local displayText = survivor.Name
+                            if NameTagSettings.ShowDistance then
+                                displayText = string.format("%s [%d]", survivor.Name, math.floor(distance))
+                            end
+                            
+                            -- 设置绘制属性
+                            drawing.Text = displayText
+                            drawing.Color = NameTagSettings.SurvivorColor
+                            drawing.Size = textSize
+                            drawing.Position = Vector2.new(screenPos.X, screenPos.Y)
+                            drawing.Visible = true
+                        else
+                            drawing.Visible = false
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- 处理杀手名称
+    if NameTagSettings.ShowKillerNames then
+        local killers = workspace.Players:FindFirstChild("Killers")
+        if killers then
+            for _, killer in ipairs(killers:GetChildren()) do
+                if killer:IsA("Model") then
+                    local humanoid = killer:FindFirstChildOfClass("Humanoid")
+                    
+                    if humanoid and humanoid.Health > 0 then  -- 只显示活着的杀手
+                        -- 获取或创建绘制对象
+                        if not NameTagDrawings[killer] then
+                            NameTagDrawings[killer] = createNameTagDrawing()
+                        end
+                        
+                        local drawing = NameTagDrawings[killer]
+                        local headPos = getHeadPosition(killer)
+                        local screenPos, onScreen = camera:WorldToViewportPoint(headPos + NameTagSettings.TextOffset)
+                        
+                        if onScreen then
+                            -- 计算距离和缩放比例
+                            local distance = (headPos - localRoot.Position).Magnitude
+                            local scale = math.clamp(
+                                1 - (distance - NameTagSettings.DistanceScale.MinDistance) / 
+                                (NameTagSettings.DistanceScale.MaxDistance - NameTagSettings.DistanceScale.MinDistance), 
+                                0.3, 1  -- 最小缩放0.3倍
+                            )
+                            
+                            -- 动态调整文字大小
+                            local textSize = math.floor(NameTagSettings.BaseTextSize * scale)
+                            textSize = math.clamp(textSize, NameTagSettings.MinTextSize, NameTagSettings.MaxTextSize)
+                            
+                            -- 设置显示文本
+                            local displayText = killer.Name
+                            if NameTagSettings.ShowDistance then
+                                displayText = string.format("%s [%d]", killer.Name, math.floor(distance))
+                            end
+                            
+                            -- 设置绘制属性
+                            drawing.Text = displayText
+                            drawing.Color = NameTagSettings.KillerColor
+                            drawing.Size = textSize
+                            drawing.Position = Vector2.new(screenPos.X, screenPos.Y)
+                            drawing.Visible = true
+                        else
+                            drawing.Visible = false
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- 清理名称标签
+local function cleanupNameTags()
+    for _, drawing in pairs(NameTagDrawings) do
+        if drawing then
+            drawing:Remove()
+        end
+    end
+    NameTagDrawings = {}
+end
+
+-- 主开关
+Visual:AddToggle("NameTagsToggle", {
+    Text = "启用名称绘制",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- 初始化连接
+            if not NameTagSettings.connection then
+                NameTagSettings.connection = game:GetService("RunService").RenderStepped:Connect(updateNameTags)
+            end
+            
+            -- 监听角色移除
+            if not NameTagSettings.removedConnection then
+                NameTagSettings.removedConnection = game:GetService("Players").PlayerRemoving:Connect(function(player)
+                    for model, drawing in pairs(NameTagDrawings) do
+                        if model.Name == player.Name then
+                            drawing:Remove()
+                            NameTagDrawings[model] = nil
+                        end
+                    end
+                end)
+            end
+        else
+            -- 关闭连接
+            if NameTagSettings.connection then
+                NameTagSettings.connection:Disconnect()
+                NameTagSettings.connection = nil
+            end
+            
+            if NameTagSettings.removedConnection then
+                NameTagSettings.removedConnection:Disconnect()
+                NameTagSettings.removedConnection = nil
+            end
+            
+            -- 清理绘制对象
+            cleanupNameTags()
+        end
+    end
+})
+
+-- 幸存者开关
+Visual:AddToggle("ShowSurvivorNames", {
+    Text = "显示幸存者名称",
+    Default = true,
+    Callback = function(enabled)
+        NameTagSettings.ShowSurvivorNames = enabled
+    end
+})
+
+-- 杀手开关
+Visual:AddToggle("ShowKillerNames", {
+    Text = "显示杀手名称",
+    Default = true,
+    Callback = function(enabled)
+        NameTagSettings.ShowKillerNames = enabled
+    end
+})
+
+-- 距离显示开关
+Visual:AddToggle("ShowDistance", {
+    Text = "显示距离",
+    Default = true,
+    Callback = function(enabled)
+        NameTagSettings.ShowDistance = enabled
+    end
+})
+
+-- 大小设置
+Visual:AddSlider("BaseTextSize", {
+    Text = "基础文字大小",
+    Min = 10,
+    Max = 20,
+    Default = 14,
+    Rounding = 0,
+    Callback = function(value)
+        NameTagSettings.BaseTextSize = value
+    end
+})
+
+-- 距离设置
+Visual:AddSlider("MinDistance", {
+    Text = "最小距离",
+    Min = 5,
+    Max = 200,
+    Default = 10,
+    Rounding = 0,
+    Callback = function(value)
+        NameTagSettings.DistanceScale.MinDistance = value
+    end
+})
+
+Visual:AddSlider("MaxDistance", {
+    Text = "最大距离",
+    Min = 30,
+    Max = 500,
+    Default = 50,
+    Rounding = 0,
+    Callback = function(value)
+        NameTagSettings.DistanceScale.MaxDistance = value
+    end
+})
+
+
+local Visual = Tabs.Esp:AddLeftGroupbox("绘制功能")
+local LibESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImamGV/Script/main/ESP"))()
+
+
+
+
+local camera = workspace.CurrentCamera
+local localPlayer = game:GetService("Players").LocalPlayer
+
+Visual:AddToggle("SurvivorHealth", {
+    Text = "绘制幸存者血量(文字)",
+    Default = false,
+    Callback = function(v)
+        if v then
+            local sur = workspace.Players.Survivors
+            
+            local function survivoresp(char)
+                local billboard = Instance.new("BillboardGui")
+                billboard.Size = UDim2.new(3, 0, 1, 0)
+                billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+                billboard.Adornee = char.Head
+                billboard.Parent = char.Head
+                billboard.AlwaysOnTop = true
+                
+                local textLabel = Instance.new("TextLabel")
+                textLabel.Size = UDim2.new(1, 0, 1, 0)
+                textLabel.Position = UDim2.new(0, 0, 0, 0)
+                textLabel.BackgroundTransparency = 1
+                textLabel.TextScaled = false
+                textLabel.Text = "血量: "..char.Humanoid.Health.."/"..char.Humanoid.MaxHealth
+                textLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                textLabel.Font = Enum.Font.Arcade
+                textLabel.Parent = billboard
+
+              
+                local distanceUpdate
+                distanceUpdate = game:GetService("RunService").RenderStepped:Connect(function()
+                    if char:FindFirstChild("Head") and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local distance = (char.Head.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                        
+                        local textSize = math.clamp(30 - (distance / 2), 12, 20)
+                        textLabel.TextSize = textSize
+                    end
+                end)
+
+                local healthUpdate = char:FindFirstChild("Humanoid").HealthChanged:Connect(function()
+                    textLabel.Text = "血量: "..char:FindFirstChild("Humanoid").Health.."/"..char:FindFirstChild("Humanoid").MaxHealth
+                end)
+
+                char:FindFirstChild("Humanoid").Died:Connect(function()
+                    distanceUpdate:Disconnect()
+                    healthUpdate:Disconnect()
+                    textLabel.Text = ""
+                end)
+
+                return {billboard = billboard, connections = {distanceUpdate, healthUpdate}}
+            end
+
+            getgenv().SurvivorHealthConnections = {
+                Added = sur.DescendantAdded:Connect(function(v)
+                    if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+                        repeat wait() until v:FindFirstChild("Humanoid")
+                        survivoresp(v)
+                    end
+                end)
+            }
+
+            for _,v in pairs(sur:GetDescendants()) do
+                if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+                    repeat wait() until v:FindFirstChild("Humanoid")
+                    survivoresp(v)
+                end
+            end
+        else
+            if getgenv().SurvivorHealthConnections then
+                getgenv().SurvivorHealthConnections.Added:Disconnect()
+            end
+            
+            for _,v in pairs(workspace.Players.Survivors:GetDescendants()) do
+                if v:IsA("Model") and v:FindFirstChild("Head") then
+                    for _,child in pairs(v.Head:GetChildren()) do
+                        if child:IsA("BillboardGui") then
+                            child:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
+
+Visual:AddToggle("KillerHealth", {
+    Text = "绘制杀手血量(文字)",
+    Default = false,
+    Callback = function(v)
+        if v then
+            local kil = workspace.Players.Killers
+            
+            local function killeresp(char)
+                local billboard = Instance.new("BillboardGui")
+                billboard.Size = UDim2.new(3, 0, 1, 0)
+                billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+                billboard.Adornee = char.Head
+                billboard.Parent = char.Head
+                billboard.AlwaysOnTop = true
+                
+                local textLabel = Instance.new("TextLabel")
+                textLabel.Size = UDim2.new(1, 0, 1, 0)
+                textLabel.Position = UDim2.new(0, 0, 0, 0)
+                textLabel.BackgroundTransparency = 1
+                textLabel.TextScaled = false
+                textLabel.Text = "血量: "..char.Humanoid.Health.."/"..char.Humanoid.MaxHealth
+                textLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+                textLabel.Font = Enum.Font.Arcade
+                textLabel.Parent = billboard
+
+                -- 添加距离检测更新
+                local distanceUpdate
+                distanceUpdate = game:GetService("RunService").RenderStepped:Connect(function()
+                    if char:FindFirstChild("Head") and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local distance = (char.Head.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                        -- 根据距离动态调整文字大小 (10-30米范围内变化)
+                        local textSize = math.clamp(30 - (distance / 2), 12, 20)
+                        textLabel.TextSize = textSize
+                    end
+                end)
+
+                local healthUpdate = char:FindFirstChild("Humanoid").HealthChanged:Connect(function()
+                    textLabel.Text = "血量: "..char:FindFirstChild("Humanoid").Health.."/"..char:FindFirstChild("Humanoid").MaxHealth
+                end)
+
+                char:FindFirstChild("Humanoid").Died:Connect(function()
+                    distanceUpdate:Disconnect()
+                    healthUpdate:Disconnect()
+                    textLabel.Text = ""
+                end)
+
+                return {billboard = billboard, connections = {distanceUpdate, healthUpdate}}
+            end
+
+            getgenv().KillerHealthConnections = {
+                Added = kil.DescendantAdded:Connect(function(v)
+                    if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+                        repeat wait() until v:FindFirstChild("Humanoid")
+                        killeresp(v)
+                    end
+                end)
+            }
+
+            for _,v in pairs(kil:GetDescendants()) do
+                if v:IsA("Model") and v:FindFirstChild("Humanoid") then
+                    repeat wait() until v:FindFirstChild("Humanoid")
+                    killeresp(v)
+                end
+            end
+        else
+            if getgenv().KillerHealthConnections then
+                getgenv().KillerHealthConnections.Added:Disconnect()
+            end
+            
+            for _,v in pairs(workspace.Players.Killers:GetDescendants()) do
+                if v:IsA("Model") and v:FindFirstChild("Head") then
+                    for _,child in pairs(v.Head:GetChildren()) do
+                        if child:IsA("BillboardGui") then
+                            child:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
+
+Visual:AddToggle("EKE",{
+    Text = "杀手机器人绘制",
+    Callback = function(v)
+        if v then
+            for _, v in ipairs(workspace:GetDescendants()) do
+                if v:IsA("Model") and v.Name == "PizzaDeliveryRig" or v.Name == "Bunny" or v.Name == "Mafiaso1" or v.Name == "Mafiaso2" or v.Name == "Mafiaso3" then
+                    LibESP:AddESP(v, "披萨送货员", Color3.fromRGB(255, 52, 179), 14, "Other_ESP")
+                elseif v:IsA("Model") and v.Name == "1x1x1x1Zombie" then
+                    LibESP:AddESP(v, "1x1x1x1 (僵尸)", Color3.fromRGB(224, 102, 255), 14, "Other_ESP")
+                end
+            end
+            OtherESP = workspace.DescendantAdded:Connect(function(v)
+                if v:IsA("Model") and v.Name == "PizzaDeliveryRig" or v.Name == "Bunny" or v.Name == "Mafiaso1" or v.Name == "Mafiaso2" or v.Name == "Mafiaso3" then
+                    LibESP:AddESP(v, "披萨送货员", Color3.fromRGB(255, 52, 179), 14, "Other_ESP")
+                elseif v:IsA("Model") and v.Name == "1x1x1x1Zombie" then
+                    LibESP:AddESP(v, "1x1x1x1 (僵尸)", Color3.fromRGB(224, 102, 255), 14, "Other_ESP")
+                end
+            end)
+        else
+            OtherESP:Disconnect()
+            LibESP:Delete("Other_ESP")
+        end
+    end
+})
+
+Visual:AddToggle("GeneratorESP", {
+    Text = "绘制电机",
+    Default = false,
+    Callback = function(enabled)
+        -- 将 generatorData 移到回调函数内部，确保每次开启都是独立的作用域
+        local generatorData = {}
+        
+        if enabled then
+            local scanInterval = 0.5 
+            local lastScanTime = 0
+            
+            local distanceSettings = {
+                MinDistance = 5,
+                MaxDistance = 100,
+                MinScale = 0.8,
+                MaxScale = 1.5,
+                MinTextSize = 8,
+                MaxTextSize = 10
+            }
+            
+            local function updateGeneratorESP(gen, data)
+                if not gen or not gen:FindFirstChild("Main") then return end
+                
+                local character = game:GetService("Players").LocalPlayer.Character
+                local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+                
+                if gen:FindFirstChild("Progress") then
+                    local progress = gen.Progress.Value
+                    if progress >= 99 then
+                        if data.billboard then data.billboard:Destroy() end
+                        if data.distanceBillboard then data.distanceBillboard:Destroy() end
+                        if data.highlight then data.highlight:Destroy() end
+                        generatorData[gen] = nil
+                        return
+                    end
+                    
+                    if data.textLabel then
+                        data.textLabel.Text = string.format("电机进度: %d%%", progress)
+                    end
+                    
+                    if humanoidRootPart and data.distanceLabel then
+                        local distance = (gen.Main.Position - humanoidRootPart.Position).Magnitude
+                        data.distanceLabel.Text = string.format("距离: %d米", math.floor(distance))
+                        
+                        local distanceRatio = math.clamp(
+                            (distance - distanceSettings.MinDistance) / 
+                            (distanceSettings.MaxDistance - distanceSettings.MinDistance),
+                            0, 1
+                        )
+                        
+                        local scale = distanceSettings.MinScale + 
+                            distanceRatio * (distanceSettings.MaxScale - distanceSettings.MinScale)
+                        
+                        local textSize = distanceSettings.MinTextSize + 
+                            distanceRatio * (distanceSettings.MaxTextSize - distanceSettings.MinTextSize)
+                        
+                        if data.billboard then data.billboard.Size = UDim2.new(4 * scale, 0, 1 * scale, 0) end
+                        if data.distanceBillboard then data.distanceBillboard.Size = UDim2.new(4 * scale, 0, 1 * scale, 0) end
+                        if data.textLabel then data.textLabel.TextSize = textSize end
+                        if data.distanceLabel then data.distanceLabel.TextSize = textSize end
+                        
+                        local transparency = math.clamp((distance - 50) / 100, 0, 0.4)
+                        if data.textLabel then data.textLabel.TextTransparency = transparency end
+                        if data.distanceLabel then data.distanceLabel.TextTransparency = transparency end
+                        if data.highlight then data.highlight.FillTransparency = 0.85 + (transparency * 0.5) end
+                    end
+                end
+            end
+            
+            local function createGeneratorESP(gen)
+                if not gen or not gen:FindFirstChild("Main") or generatorData[gen] then return end
+                
+                local billboard = Instance.new("BillboardGui")
+                billboard.Name = "GeneratorESP"
+                billboard.Size = UDim2.new(4, 0, 1, 0)
+                billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+                billboard.Adornee = gen.Main
+                billboard.Parent = gen.Main
+                billboard.AlwaysOnTop = true
+                
+                local textLabel = Instance.new("TextLabel")
+                textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                textLabel.BackgroundTransparency = 1
+                textLabel.TextScaled = false
+                textLabel.Text = "电机加载中..."
+                textLabel.TextColor3 = Color3.fromRGB(0, 255, 255)
+                textLabel.Font = Enum.Font.Arcade
+                textLabel.TextStrokeTransparency = 0
+                textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+                textLabel.TextSize = 8
+                textLabel.Parent = billboard
+                
+                local distanceBillboard = Instance.new("BillboardGui")
+                distanceBillboard.Name = "GeneratorDistanceESP"
+                distanceBillboard.Size = UDim2.new(4, 0, 1, 0)
+                distanceBillboard.StudsOffset = Vector3.new(0, 3.5, 0)
+                distanceBillboard.Adornee = gen.Main
+                distanceBillboard.Parent = gen.Main
+                distanceBillboard.AlwaysOnTop = true
+                
+                local distanceLabel = Instance.new("TextLabel")
+                distanceLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                distanceLabel.BackgroundTransparency = 1
+                distanceLabel.TextScaled = false
+                distanceLabel.Text = "计算距离中..."
+                distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+                distanceLabel.Font = Enum.Font.Arcade
+                distanceLabel.TextStrokeTransparency = 0
+                distanceLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+                distanceLabel.TextSize = 8
+                distanceLabel.Parent = distanceBillboard
+                
+                local highlight = Instance.new("Highlight")
+                highlight.Name = "GeneratorHighlight"
+                highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                highlight.Enabled = true
+                highlight.OutlineColor = Color3.fromRGB(0, 255, 255)
+                highlight.FillColor = Color3.fromRGB(0, 255, 255)
+                highlight.FillTransparency = 0.9
+                highlight.OutlineTransparency = 0
+                highlight.Parent = gen
+                
+                generatorData[gen] = {
+                    billboard = billboard,
+                    distanceBillboard = distanceBillboard,
+                    textLabel = textLabel,
+                    distanceLabel = distanceLabel,
+                    highlight = highlight
+                }
+                
+                gen.Destroying:Connect(function()
+                    if generatorData[gen] then
+                        if generatorData[gen].billboard then generatorData[gen].billboard:Destroy() end
+                        if generatorData[gen].distanceBillboard then generatorData[gen].distanceBillboard:Destroy() end
+                        if generatorData[gen].highlight then generatorData[gen].highlight:Destroy() end
+                        generatorData[gen] = nil
+                    end
+                end)
+            end
+            
+            local function scanGenerators()
+                for _, gen in pairs(workspace:GetDescendants()) do
+                    if gen:IsA("Model") and gen:FindFirstChild("Main") and gen.Name == "Generator" then
+                        createGeneratorESP(gen)
+                    end
+                end
+            end
+            
+            local mainConnection = workspace.DescendantAdded:Connect(function(v)
+                if v:IsA("Model") and v:FindFirstChild("Main") and v.Name == "Generator" then
+                    createGeneratorESP(v)
+                end
+            end)
+            
+            local heartbeatConnection = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
+                lastScanTime = lastScanTime + deltaTime
+                if lastScanTime >= scanInterval then
+                    lastScanTime = 0
+                    scanGenerators()
+                end
+                
+                for gen, data in pairs(generatorData) do
+                    if gen and gen.Parent then
+                        updateGeneratorESP(gen, data)
+                    else
+                        if data.billboard then data.billboard:Destroy() end
+                        if data.distanceBillboard then data.distanceBillboard:Destroy() end
+                        if data.highlight then data.highlight:Destroy() end
+                        generatorData[gen] = nil
+                    end
+                end
+            end)
+            
+            -- 存储连接以便之后断开
+            generatorData.connections = {
+                main = mainConnection,
+                heartbeat = heartbeatConnection
+            }
+        else
+            -- 关闭功能时的清理逻辑
+            if generatorData.connections then
+                for _, connection in pairs(generatorData.connections) do
+                    if connection then
+                        connection:Disconnect()
+                    end
+                end
+            end
+            
+            for gen, data in pairs(generatorData) do
+                if type(data) == "table" then
+                    if data.billboard then data.billboard:Destroy() end
+                    if data.distanceBillboard then data.distanceBillboard:Destroy() end
+                    if data.highlight then data.highlight:Destroy() end
+                end
+            end
+        end
+    end
+})
+
+Visual:AddToggle("ST",{
+Text = "三角炸弹绘制",
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace:GetDescendants()) do
+if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
+LibESP:AddESP(v, "", Color3.fromRGB(255, 0, 255), 14, "SubspaceTripmine_ESP")
+end
+end
+SubspaceTripmineESP = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
+LibESP:AddESP(v, "", Color3.fromRGB(255, 0, 255), 14, "SubspaceTripmine_ESP")
+end
+end)
+else
+SubspaceTripmineESP:Disconnect()
+LibESP:Delete("SubspaceTripmine_ESP")
+end
+end})
+Visual:AddToggle("ME",{
+Text = "医疗箱绘制",
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace:GetDescendants()) do
+if v:IsA("Model") and v.Name == "Medkit" and not v:FindFirstChild("Medkit_ESP") then
+LibESP:AddESP(v, "Medkit", Color3.fromRGB(187, 255, 255), 14, "Medkit_ESP")
+end
+end
+MedkitESP = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Name == "Medkit" and not v:FindFirstChild("Medkit_ESP") then
+LibESP:AddESP(v, "Medkit", Color3.fromRGB(187, 255, 255), 14, "Medkit_ESP")
+end
+end)
+else
+Medkit:Disconnect()
+LibESP:Delete("Medkit_ESP")
+end
+end})
+Visual:AddToggle("BCE",{
+Text = "可乐绘制",
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace:GetDescendants()) do
+if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("BloxyCola_ESP") then
+LibESP:AddESP(v, "Bloxy Cola", Color3.fromRGB(131, 111, 255), 14, "BloxyCola_ESP")
+end
+end
+ColaESP = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("BloxyCola_ESP") then
+LibESP:AddESP(v, "Bloxy Cola", Color3.fromRGB(131, 111, 255), 14, "BloxyCola_ESP")
+end
+end)
+else
+ColaESP:Disconnect()
+LibESP:Delete("BloxyCola_ESP")
+end
+end})
+
+local Visual = Tabs.Esp:AddRightGroupbox("高亮绘制")
+local LibESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImamGV/Script/main/ESP"))()
+
+Visual:AddToggle("SE",{
+Text = "幸存者绘制",
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace.Players:GetDescendants()) do
+if v:IsA("Model") and v.Parent.Name == "Survivors" and not v:FindFirstChild("Survival_ESP") then
+LibESP:AddESP(v, "", Color3.fromRGB(0, 191, 255), 14, "Survival_ESP")
+end
+end
+SurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Parent.Name == "Survivors" and not v:FindFirstChild("Survival_ESP") then
+LibESP:AddESP(v, "", Color3.fromRGB(0, 191, 255), 14, "Survival_ESP")
+end
+end)
+else
+SurvivalESP:Disconnect()
+LibESP:Delete("Survival_ESP")
+end
+end})
+Visual:AddToggle("KE",{
+Text = "杀手绘制",
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace.Players:GetDescendants()) do
+if v:IsA("Model") and v.Parent.Name == "Killers" and not v:FindFirstChild("Killer_ESP") then
+LibESP:AddESP(v, "", Color3.fromRGB(255, 0, 0), 14, "Killers_ESP")
+elseif v:IsA("Model") and v.Parent.Name == "Killers" and not v:FindFirstChild("Killer_ESP") then
+LibESP:AddESP(v.HumanoidRootPart, "Killer", Color3.fromRGB(255, 0, 0), 14, "Killers_ESP")
+end
+end
+KillersESP = workspace.Players.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Parent.Name == "Killers" and not v:FindFirstChild("Killers_ESP") then
+LibESP:AddESP(v, "", Color3.fromRGB(255, 0, 0), 14, "Killers_ESP")
+elseif v:IsA("Model") and v.Parent.Name == "Killers" and not v:FindFirstChild("Killer_ESP") then
+LibESP:AddESP(v.HumanoidRootPart, "Killer", Color3.fromRGB(255, 0, 0), 14, "Killers_ESP")
+end
+end)
+else
+KillersESP:Disconnect()
+LibESP:Delete("Killers_ESP")
+end
+end})
+
+local Visual = Tabs.Esp:AddRightGroupbox("2D方框")
+
+
+Visual:AddToggle("SE", {
+    Text = "绘制幸存者方框",
+    Default = false,
+    Callback = function(v)
+        if v then
+            local a = workspace:WaitForChild("Players")
+            local c = a:WaitForChild("Survivors")
+            local d = game:GetService("RunService")
+            local e = game:GetService("Players").LocalPlayer
+            
+            local function f(g, h)
+                if not g:IsA("Model") then return end
+                if g == e.Character then return end
+                local i = g:FindFirstChild("HumanoidRootPart")
+                if not i then return end
+                if i:FindFirstChild("playeresp") then return end
+                
+                local j = Instance.new("BillboardGui")
+                j.Name = "playeresp"
+                j.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                j.Active = true
+                j.AlwaysOnTop = true
+                j.LightInfluence = 1.000
+                j.Size = UDim2.new(3, 0, 5, 0)
+                j.Adornee = i
+                j.Parent = i
+                
+                local k = Instance.new("Frame")
+                k.Name = "playershow"
+                k.BackgroundColor3 = Color3.fromRGB(255, 25, 25)
+                k.BackgroundTransparency = 1
+                k.Size = UDim2.new(1, 0, 1, 0)
+                k.Parent = j
+                
+                local l = Instance.new("UIStroke")
+                l.Color = h
+                l.Thickness = 2
+                l.Transparency = 0.2
+                l.Parent = k
+            end
+            
+            SurvivorESPConnection = d.RenderStepped:Connect(function()
+                for m, o in ipairs(c:GetChildren()) do
+                    f(o, Color3.fromRGB(0, 255, 0))
+                end
+            end)
+            
+            -- 添加新加入的幸存者
+            SurvivorAddedConnection = c.ChildAdded:Connect(function(o)
+                f(o, Color3.fromRGB(0, 255, 0))
+            end)
+        else
+            if SurvivorESPConnection then
+                SurvivorESPConnection:Disconnect()
+            end
+            if SurvivorAddedConnection then
+                SurvivorAddedConnection:Disconnect()
+            end
+            
+            -- 清除所有幸存者ESP
+            local a = workspace:WaitForChild("Players")
+            local c = a:WaitForChild("Survivors")
+            for _, o in ipairs(c:GetChildren()) do
+                if o:IsA("Model") then
+                    local i = o:FindFirstChild("HumanoidRootPart")
+                    if i and i:FindFirstChild("playeresp") then
+                        i.playeresp:Destroy()
+                    end
+                end
+            end
+        end
+    end
+})
+
+Visual:AddToggle("KE", {
+    Text = "绘制杀手方框",
+    Default = false,
+    Callback = function(v)
+        if v then
+            local a = workspace:WaitForChild("Players")
+            local b = a:WaitForChild("Killers")
+            local d = game:GetService("RunService")
+            local e = game:GetService("Players").LocalPlayer
+            
+            local function f(g, h)
+                if not g:IsA("Model") then return end
+                if g == e.Character then return end
+                local i = g:FindFirstChild("HumanoidRootPart")
+                if not i then return end
+                if i:FindFirstChild("playeresp") then return end
+                
+                local j = Instance.new("BillboardGui")
+                j.Name = "playeresp"
+                j.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                j.Active = true
+                j.AlwaysOnTop = true
+                j.LightInfluence = 1.000
+                j.Size = UDim2.new(3, 0, 5, 0)
+                j.Adornee = i
+                j.Parent = i
+                
+                local k = Instance.new("Frame")
+                k.Name = "playershow"
+                k.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                k.BackgroundTransparency = 1
+                k.Size = UDim2.new(1, 0, 1, 0)
+                k.Parent = j
+                
+                local l = Instance.new("UIStroke")
+                l.Color = h
+                l.Thickness = 2
+                l.Transparency = 0.2
+                l.Parent = k
+            end
+            
+            KillerESPConnection = d.RenderStepped:Connect(function()
+                for m, o in ipairs(b:GetChildren()) do
+                    f(o, Color3.fromRGB(255, 0, 0))
+                end
+            end)
+            
+            -- 添加新加入的杀手
+            KillerAddedConnection = b.ChildAdded:Connect(function(o)
+                f(o, Color3.fromRGB(255, 0, 0))
+            end)
+        else
+            if KillerESPConnection then
+                KillerESPConnection:Disconnect()
+            end
+            if KillerAddedConnection then
+                KillerAddedConnection:Disconnect()
+            end
+            
+            -- 清除所有杀手ESP
+            local a = workspace:WaitForChild("Players")
+            local b = a:WaitForChild("Killers")
+            for _, o in ipairs(b:GetChildren()) do
+                if o:IsA("Model") then
+                    local i = o:FindFirstChild("HumanoidRootPart")
+                    if i and i:FindFirstChild("playeresp") then
+                        i.playeresp:Destroy()
+                    end
+                end
+            end
+        end
+    end
+})
+
+local Visual = Tabs.Esp:AddRightGroupbox("渲染绘制")
+
+Visual:AddToggle("DistanceESP", {
+    Text = "距离绘制",
+    Default = false,
+    Callback = function(v)
+        if v then
+            -- 初始化变量
+            local players = game:GetService("Players")
+            local run_service = game:GetService("RunService")
+            local local_player = players.LocalPlayer
+            local camera = workspace.CurrentCamera
+
+            -- 清理旧的ESP
+            if getgenv().cyberline_distance_esp then
+                for _, text in pairs(getgenv().cyberline_distance_esp) do
+                    pcall(function() text:Remove() end)
+                end
+            end
+
+            getgenv().cyberline_distance_esp = {}
+
+            -- 创建距离标签函数
+            local function create_distance_label()
+                local text = Drawing.new("Text")
+                text.Size = 12
+                text.Center = true
+                text.Outline = true
+                text.Font = 2
+                text.Color = Color3.fromRGB(255, 255, 255)
+                text.Visible = false
+                return text
+            end
+
+            -- 主循环
+            getgenv().distanceESPConnection = run_service.RenderStepped:Connect(function()
+                for _, player in ipairs(players:GetPlayers()) do
+                    if player ~= local_player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local root = player.Character.HumanoidRootPart
+                        local screen_pos, on_screen = camera:WorldToViewportPoint(root.Position - Vector3.new(0, 2.8, 0))
+
+                        if not getgenv().cyberline_distance_esp[player] then
+                            getgenv().cyberline_distance_esp[player] = create_distance_label()
+                        end
+
+                        local text = getgenv().cyberline_distance_esp[player]
+
+                        if on_screen then
+                            local distance = math.floor((root.Position - camera.CFrame.Position).Magnitude)
+                            text.Position = Vector2.new(screen_pos.X, screen_pos.Y)
+                            text.Text = tostring(distance) .. "m"
+                            text.Visible = true
+                        else
+                            text.Visible = false
+                        end
+                    elseif getgenv().cyberline_distance_esp[player] then
+                        getgenv().cyberline_distance_esp[player].Visible = false
+                    end
+                end
+            end)
+        else
+            -- 关闭ESP
+            if getgenv().distanceESPConnection then
+                getgenv().distanceESPConnection:Disconnect()
+            end
+
+            -- 清除所有距离标签
+            if getgenv().cyberline_distance_esp then
+                for _, text in pairs(getgenv().cyberline_distance_esp) do
+                    pcall(function() text:Remove() end)
+                end
+                getgenv().cyberline_distance_esp = nil
+            end
+        end
+    end
+})
+
+
+Visual:AddToggle("TopTracers", {
+    Text = "天线绘制",
+    Default = false,
+    Callback = function(v)
+        if v then
+            -- 初始化变量
+            local players = game:GetService("Players")
+            local run_service = game:GetService("RunService")
+            local local_player = players.LocalPlayer
+            local camera = workspace.CurrentCamera
+
+            -- 清理旧的追踪线
+            if getgenv().cyberline_tracers then
+                for _, line in pairs(getgenv().cyberline_tracers) do
+                    pcall(function() line:Remove() end)
+                end
+            end
+
+            getgenv().cyberline_tracers = {}
+
+            -- 创建追踪线函数
+            local function create_tracer()
+                local line = Drawing.new("Line")
+                line.Color = Color3.fromRGB(255, 255, 255)
+                line.Thickness = 1
+                line.Transparency = 1
+                line.Visible = false
+                return line
+            end
+
+            -- 主循环
+            getgenv().tracerConnection = run_service.RenderStepped:Connect(function()
+                for _, player in ipairs(players:GetPlayers()) do
+                    if player ~= local_player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local root_part = player.Character.HumanoidRootPart
+                        local screen_pos, on_screen = camera:WorldToViewportPoint(root_part.Position)
+
+                        if not getgenv().cyberline_tracers[player] then
+                            getgenv().cyberline_tracers[player] = create_tracer()
+                        end
+
+                        local tracer = getgenv().cyberline_tracers[player]
+
+                        if on_screen then
+                            -- 修改为从屏幕顶部中心向下绘制
+                            tracer.From = Vector2.new(camera.ViewportSize.X / 2, 0)  -- 顶部中心
+                            tracer.To = Vector2.new(screen_pos.X, screen_pos.Y)
+                            tracer.Visible = true
+                        else
+                            tracer.Visible = false
+                        end
+                    elseif getgenv().cyberline_tracers[player] then
+                        getgenv().cyberline_tracers[player].Visible = false
+                    end
+                end
+            end)
+        else
+            -- 关闭追踪
+            if getgenv().tracerConnection then
+                getgenv().tracerConnection:Disconnect()
+            end
+
+            -- 清除所有追踪线
+            if getgenv().cyberline_tracers then
+                for _, line in pairs(getgenv().cyberline_tracers) do
+                    pcall(function() line:Remove() end)
+                end
+                getgenv().cyberline_tracers = nil
+            end
+        end
+    end
+})
+
+
+Visual:AddToggle("HealthBars", {
+    Text = "血量绘制",
+    Default = false,
+    Callback = function(v)
+        if v then
+            -- 初始化变量
+            local players = game:GetService("Players")
+            local run_service = game:GetService("RunService")
+            local local_player = players.LocalPlayer
+            local camera = workspace.CurrentCamera
+
+            -- 清理旧的血条
+            if getgenv().cyberline_health_bars then
+                for _, data in pairs(getgenv().cyberline_health_bars) do
+                    pcall(function() data.bar:Remove() end)
+                    pcall(function() data.outline:Remove() end)
+                end
+            end
+
+            getgenv().cyberline_health_bars = {}
+
+            -- 创建血条函数
+            local function create_bar()
+                local outline = Drawing.new("Square")
+                outline.Color = Color3.new(0, 0, 0)
+                outline.Filled = true
+                outline.Transparency = 1
+                outline.Visible = false
+
+                local bar = Drawing.new("Square")
+                bar.Color = Color3.fromRGB(0, 255, 0)
+                bar.Filled = true
+                bar.Transparency = 1
+                bar.Visible = false
+
+                return { bar = bar, outline = outline }
+            end
+
+            -- 获取角色边界函数
+            local function get_bounds(character)
+                local min = Vector3.new(math.huge, math.huge, math.huge)
+                local max = Vector3.new(-math.huge, -math.huge, -math.huge)
+                for _, part in character:GetChildren() do
+                    if part:IsA("BasePart") then
+                        local pos = part.Position
+                        min = Vector3.new(math.min(min.X, pos.X), math.min(min.Y, pos.Y), math.min(min.Z, pos.Z))
+                        max = Vector3.new(math.max(max.X, pos.X), math.max(max.Y, pos.Y), math.max(max.Z, pos.Z))
+                    end
+                end
+                return min, max
+            end
+
+            -- 主循环
+            getgenv().healthBarConnection = run_service.RenderStepped:Connect(function()
+                for _, player in ipairs(players:GetPlayers()) do
+                    if player ~= local_player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+                        if humanoid then
+                            local min, max = get_bounds(player.Character)
+                            local points = {
+                                Vector3.new(min.X, min.Y, min.Z),
+                                Vector3.new(min.X, max.Y, min.Z),
+                                Vector3.new(max.X, min.Y, min.Z),
+                                Vector3.new(max.X, max.Y, min.Z),
+                                Vector3.new(min.X, min.Y, max.Z),
+                                Vector3.new(min.X, max.Y, max.Z),
+                                Vector3.new(max.X, min.Y, max.Z),
+                                Vector3.new(max.X, max.Y, max.Z),
+                            }
+
+                            local min2d = Vector2.new(math.huge, math.huge)
+                            local max2d = Vector2.new(-math.huge, -math.huge)
+                            local visible = false
+
+                            for _, point in ipairs(points) do
+                                local screen, on_screen = camera:WorldToViewportPoint(point)
+                                if on_screen then
+                                    visible = true
+                                    local pos2d = Vector2.new(screen.X, screen.Y)
+                                    min2d = Vector2.new(math.min(min2d.X, pos2d.X), math.min(min2d.Y, pos2d.Y))
+                                    max2d = Vector2.new(math.max(max2d.X, pos2d.X), math.max(max2d.Y, pos2d.Y))
+                                end
+                            end
+
+                            if not getgenv().cyberline_health_bars[player] then
+                                getgenv().cyberline_health_bars[player] = create_bar()
+                            end
+
+                            local bar = getgenv().cyberline_health_bars[player].bar
+                            local outline = getgenv().cyberline_health_bars[player].outline
+
+                            if visible then
+                                local height = max2d.Y - min2d.Y
+                                local ratio = math.clamp(humanoid.Health / humanoid.MaxHealth, 0, 1)
+                                local bar_height = height * ratio
+
+                                bar.Size = Vector2.new(2, bar_height)
+                                bar.Position = Vector2.new(min2d.X - 5, max2d.Y - bar_height)
+                                bar.Visible = true
+                                bar.Color = Color3.fromRGB(255 * (1 - ratio), 255 * ratio, 0)  -- 根据血量变色
+
+                                outline.Size = Vector2.new(4, height + 2)
+                                outline.Position = Vector2.new(min2d.X - 6, min2d.Y - 1)
+                                outline.Visible = true
+                            else
+                                bar.Visible = false
+                                outline.Visible = false
+                            end
+                        end
+                    elseif getgenv().cyberline_health_bars[player] then
+                        getgenv().cyberline_health_bars[player].bar.Visible = false
+                        getgenv().cyberline_health_bars[player].outline.Visible = false
+                    end
+                end
+            end)
+        else
+            -- 关闭血条显示
+            if getgenv().healthBarConnection then
+                getgenv().healthBarConnection:Disconnect()
+            end
+
+            -- 清除所有血条
+            if getgenv().cyberline_health_bars then
+                for _, data in pairs(getgenv().cyberline_health_bars) do
+                    pcall(function() data.bar:Remove() end)
+                    pcall(function() data.outline:Remove() end)
+                end
+                getgenv().cyberline_health_bars = nil
+            end
+        end
+    end
+})
+
+Visual:AddToggle("SkeletonESP", {
+    Text = "骨骼绘制",
+    Default = false,
+    Callback = function(v)
+        if v then
+            -- 初始化变量
+            local players = game:GetService("Players")
+            local run_service = game:GetService("RunService")
+            local camera = workspace.CurrentCamera
+            local local_player = players.LocalPlayer
+
+            -- 清理旧的骨骼线
+            if getgenv().cyberline_skeleton then
+                for _, parts in pairs(getgenv().cyberline_skeleton) do
+                    for _, line in pairs(parts) do
+                        pcall(function() line:Remove() end)
+                    end
+                end
+            end
+
+            getgenv().cyberline_skeleton = {}
+
+            -- 创建单条骨骼线函数
+            local function create_line()
+                local line = Drawing.new("Line")
+                line.Color = Color3.new(1, 1, 1)
+                line.Thickness = 1
+                line.Transparency = 1
+                line.Visible = false
+                return line
+            end
+
+            -- 创建完整骨骼函数
+            local function create_skeleton()
+                return {
+                    head = create_line(),
+                    torso = create_line(),
+                    left_arm = create_line(),
+                    right_arm = create_line(),
+                    left_leg = create_line(),
+                    right_leg = create_line()
+                }
+            end
+
+            -- 主循环
+            getgenv().skeletonConnection = run_service.RenderStepped:Connect(function()
+                for _, player in ipairs(players:GetPlayers()) do
+                    if player ~= local_player and player.Character then
+                        local char = player.Character
+                        local parts = {
+                            head = char:FindFirstChild("Head"),
+                            upper = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso"),
+                            lower = char:FindFirstChild("LowerTorso") or char:FindFirstChild("HumanoidRootPart"),
+                            left_arm = char:FindFirstChild("LeftUpperArm") or char:FindFirstChild("Left Arm"),
+                            right_arm = char:FindFirstChild("RightUpperArm") or char:FindFirstChild("Right Arm"),
+                            left_leg = char:FindFirstChild("LeftUpperLeg") or char:FindFirstChild("Left Leg"),
+                            right_leg = char:FindFirstChild("RightUpperLeg") or char:FindFirstChild("Right Leg"),
+                        }
+
+                        if not getgenv().cyberline_skeleton[player] then
+                            getgenv().cyberline_skeleton[player] = create_skeleton()
+                        end
+
+                        local skeleton = getgenv().cyberline_skeleton[player]
+
+                        local function to_screen(part)
+                            local pos, on_screen = camera:WorldToViewportPoint(part.Position)
+                            return Vector2.new(pos.X, pos.Y), on_screen
+                        end
+
+                        local all_visible = true
+                        for _, part in pairs(parts) do
+                            if not part then
+                                all_visible = false
+                            end
+                        end
+
+                        if all_visible then
+                            local head_pos, head_on = to_screen(parts.head)
+                            local upper_pos, upper_on = to_screen(parts.upper)
+                            local lower_pos, lower_on = to_screen(parts.lower)
+                            local larm_pos, larm_on = to_screen(parts.left_arm)
+                            local rarm_pos, rarm_on = to_screen(parts.right_arm)
+                            local lleg_pos, lleg_on = to_screen(parts.left_leg)
+                            local rleg_pos, rleg_on = to_screen(parts.right_leg)
+
+                            skeleton.head.From = head_pos
+                            skeleton.head.To = upper_pos
+
+                            skeleton.torso.From = upper_pos
+                            skeleton.torso.To = lower_pos
+
+                            skeleton.left_arm.From = upper_pos
+                            skeleton.left_arm.To = larm_pos
+
+                            skeleton.right_arm.From = upper_pos
+                            skeleton.right_arm.To = rarm_pos
+
+                            skeleton.left_leg.From = lower_pos
+                            skeleton.left_leg.To = lleg_pos
+
+                            skeleton.right_leg.From = lower_pos
+                            skeleton.right_leg.To = rleg_pos
+
+                            for _, line in pairs(skeleton) do
+                                line.Visible = true
+                            end
+                        else
+                            for _, line in pairs(skeleton) do
+                                line.Visible = false
+                            end
+                        end
+                    elseif getgenv().cyberline_skeleton[player] then
+                        for _, line in pairs(getgenv().cyberline_skeleton[player]) do
+                            line.Visible = false
+                        end
+                    end
+                end
+            end)
+        else
+            -- 关闭骨骼显示
+            if getgenv().skeletonConnection then
+                getgenv().skeletonConnection:Disconnect()
+            end
+
+            -- 清除所有骨骼线
+            if getgenv().cyberline_skeleton then
+                for _, parts in pairs(getgenv().cyberline_skeleton) do
+                    for _, line in pairs(parts) do
+                        pcall(function() line:Remove() end)
+                    end
+                end
+                getgenv().cyberline_skeleton = nil
+            end
+        end
+    end
+})
+
+Visual:AddToggle("BoxESP", {
+    Text = "方框绘制",
+    Default = false,
+    Callback = function(v)
+        if v then
+            -- 初始化变量
+            local players = game:GetService("Players")
+            local run_service = game:GetService("RunService")
+            local local_player = players.LocalPlayer
+            local camera = workspace.CurrentCamera
+
+            -- 清理旧的方框
+            if getgenv().cyberline_esp_boxes then
+                for _, data in pairs(getgenv().cyberline_esp_boxes) do
+                    pcall(function() data.box:Remove() end)
+                    pcall(function() data.outline:Remove() end)
+                end
+            end
+
+            getgenv().cyberline_esp_boxes = {}
+
+            -- 创建方框函数
+            local function create_box()
+                local outline = Drawing.new("Square")
+                outline.Color = Color3.new(0, 0, 0)
+                outline.Thickness = 1
+                outline.Filled = false
+                outline.Transparency = 1
+                outline.Visible = false
+
+                local box = Drawing.new("Square")
+                box.Color = Color3.fromRGB(255, 255, 255)
+                box.Thickness = 1
+                box.Filled = false
+                box.Transparency = 1
+                box.Visible = false
+
+                return { box = box, outline = outline }
+            end
+
+            -- 获取角色边界函数
+            local function get_bounds(character)
+                local min = Vector3.new(math.huge, math.huge, math.huge)
+                local max = Vector3.new(-math.huge, -math.huge, -math.huge)
+                for _, part in character:GetChildren() do
+                    if part:IsA("BasePart") then
+                        local pos = part.Position
+                        min = Vector3.new(math.min(min.X, pos.X), math.min(min.Y, pos.Y), math.min(min.Z, pos.Z))
+                        max = Vector3.new(math.max(max.X, pos.X), math.max(max.Y, pos.Y), math.max(max.Z, pos.Z))
+                    end
+                end
+                return min, max
+            end
+
+            -- 主循环
+            getgenv().boxESPConnection = run_service.RenderStepped:Connect(function()
+                for _, player in ipairs(players:GetPlayers()) do
+                    if player ~= local_player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local min, max = get_bounds(player.Character)
+                        local points = {
+                            Vector3.new(min.X, min.Y, min.Z),
+                            Vector3.new(min.X, max.Y, min.Z),
+                            Vector3.new(max.X, min.Y, min.Z),
+                            Vector3.new(max.X, max.Y, min.Z),
+                            Vector3.new(min.X, min.Y, max.Z),
+                            Vector3.new(min.X, max.Y, max.Z),
+                            Vector3.new(max.X, min.Y, max.Z),
+                            Vector3.new(max.X, max.Y, max.Z),
+                        }
+
+                        local min2d = Vector2.new(math.huge, math.huge)
+                        local max2d = Vector2.new(-math.huge, -math.huge)
+                        local visible = false
+
+                        for _, point in ipairs(points) do
+                            local screen, on_screen = camera:WorldToViewportPoint(point)
+                            if on_screen then
+                                visible = true
+                                local pos2d = Vector2.new(screen.X, screen.Y)
+                                min2d = Vector2.new(math.min(min2d.X, pos2d.X), math.min(min2d.Y, pos2d.Y))
+                                max2d = Vector2.new(math.max(max2d.X, pos2d.X), math.max(max2d.Y, pos2d.Y))
+                            end
+                        end
+
+                        if not getgenv().cyberline_esp_boxes[player] then
+                            getgenv().cyberline_esp_boxes[player] = create_box()
+                        end
+
+                        local box = getgenv().cyberline_esp_boxes[player].box
+                        local outline = getgenv().cyberline_esp_boxes[player].outline
+
+                        if visible then
+                            local size = max2d - min2d
+                            box.Position = min2d
+                            box.Size = size
+                            box.Visible = true
+
+                            outline.Position = min2d - Vector2.new(1, 1)
+                            outline.Size = size + Vector2.new(2, 2)
+                            outline.Visible = true
+                        else
+                            box.Visible = false
+                            outline.Visible = false
+                        end
+                    elseif getgenv().cyberline_esp_boxes[player] then
+                        getgenv().cyberline_esp_boxes[player].box.Visible = false
+                        getgenv().cyberline_esp_boxes[player].outline.Visible = false
+                    end
+                end
+            end)
+        else
+            -- 关闭方框显示
+            if getgenv().boxESPConnection then
+                getgenv().boxESPConnection:Disconnect()
+            end
+
+            -- 清除所有方框
+            if getgenv().cyberline_esp_boxes then
+                for _, data in pairs(getgenv().cyberline_esp_boxes) do
+                    pcall(function() data.box:Remove() end)
+                    pcall(function() data.outline:Remove() end)
+                end
+                getgenv().cyberline_esp_boxes = nil
+            end
+        end
+    end
+})
+
+local Warning = Tabs.tzq:AddLeftGroupbox("杀手靠近提示")
+
+-- 杀手靠近提示设置
+local KillerWarningSettings = {
+    Enabled = false,
+    WarningDistance = 100, -- 警告距离(米)
+    WarningColor = Color3.fromRGB(255, 0, 0), -- 警告颜色(红色)
+    TextSize = 20, -- 文字大小
+    BlinkInterval = 0.5, -- 闪烁间隔(秒)
+    LastWarningTime = 0, -- 上次警告时间
+    WarningCooldown = 5, -- 警告冷却时间(秒)
+    WarningSoundId = "rbxassetid://6545327576", -- 警告音效ID
+    SoundVolume = 0.5 -- 音效音量
+}
+
+-- 存储绘制对象
+local warningLabel = Drawing.new("Text")
+warningLabel.Visible = false
+warningLabel.Center = true
+warningLabel.Outline = true
+warningLabel.Font = 2 -- 粗体字体
+warningLabel.Color = KillerWarningSettings.WarningColor
+warningLabel.Size = KillerWarningSettings.TextSize
+
+-- 存储音效对象
+local warningSound = Instance.new("Sound")
+warningSound.SoundId = KillerWarningSettings.WarningSoundId
+warningSound.Volume = KillerWarningSettings.SoundVolume
+warningSound.Parent = game:GetService("SoundService")
+
+-- 更新警告显示
+local function updateKillerWarning()
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+    
+    local killersFolder = workspace.Players:FindFirstChild("Killers")
+    if not killersFolder then return end
+    
+    local closestDistance = math.huge
+    local closestKiller = nil
+    
+    -- 寻找最近的杀手
+    for _, killer in ipairs(killersFolder:GetChildren()) do
+        if killer:IsA("Model") and killer:FindFirstChild("HumanoidRootPart") then
+            local distance = (character.HumanoidRootPart.Position - killer.HumanoidRootPart.Position).Magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestKiller = killer
+            end
+        end
+    end
+    
+    -- 检查距离并显示警告
+    if closestKiller and closestDistance <= KillerWarningSettings.WarningDistance then
+        local currentTime = tick()
+        
+        -- 闪烁效果
+        if currentTime - KillerWarningSettings.LastWarningTime >= KillerWarningSettings.BlinkInterval then
+            warningLabel.Visible = not warningLabel.Visible
+            KillerWarningSettings.LastWarningTime = currentTime
+        end
+        
+        -- 设置警告文本
+        warningLabel.Text = string.format("警告! 杀手 %s 在 %d 米内!", closestKiller.Name, math.floor(closestDistance))
+        warningLabel.Position = Vector2.new(
+            workspace.CurrentCamera.ViewportSize.X / 2,
+            workspace.CurrentCamera.ViewportSize.Y * 0.2
+        )
+        
+        -- 播放警告音效(冷却时间内只播放一次)
+        if currentTime - KillerWarningSettings.LastWarningTime >= KillerWarningSettings.WarningCooldown then
+            warningSound:Play()
+            KillerWarningSettings.LastWarningTime = currentTime
+        end
+    else
+        warningLabel.Visible = false
+    end
+end
+
+-- 主开关
+Warning:AddToggle("KillerWarningToggle", {
+    Text = "杀手靠近提示",
+    Default = false,
+    Callback = function(enabled)
+        KillerWarningSettings.Enabled = enabled
+        if enabled then
+            -- 初始化连接
+            if not KillerWarningSettings.connection then
+                KillerWarningSettings.connection = game:GetService("RunService").RenderStepped:Connect(updateKillerWarning)
+            end
+        else
+            -- 关闭连接
+            if KillerWarningSettings.connection then
+                KillerWarningSettings.connection:Disconnect()
+                KillerWarningSettings.connection = nil
+            end
+            warningLabel.Visible = false
+            warningSound:Stop()
+        end
+    end
+})
+
+-- 距离设置
+Warning:AddSlider("WarningDistance", {
+    Text = "警告距离(米)",
+    Min = 10,
+    Max = 200,
+    Default = 100,
+    Rounding = 0,
+    Callback = function(value)
+        KillerWarningSettings.WarningDistance = value
+    end
+})
+
+-- 文字大小设置
+Warning:AddSlider("WarningTextSize", {
+    Text = "文字大小",
+    Min = 10,
+    Max = 30,
+    Default = 20,
+    Rounding = 0,
+    Callback = function(value)
+        KillerWarningSettings.TextSize = value
+        warningLabel.Size = value
+    end
+})
+
+-- 闪烁速度设置
+Warning:AddSlider("BlinkSpeed", {
+    Text = "闪烁速度",
+    Min = 0.1,
+    Max = 1,
+    Default = 0.5,
+    Rounding = 1,
+    Callback = function(value)
+        KillerWarningSettings.BlinkInterval = value
+    end
+})
+
+-- 警告颜色选择
+Warning:AddDropdown("WarningColor", {
+    Values = {"红色", "橙色", "黄色", "粉色", "紫色"},
+    Default = "红色",
+    Text = "警告颜色",
+    Callback = function(value)
+        local colorMap = {
+            ["红色"] = Color3.fromRGB(255, 0, 0),
+            ["橙色"] = Color3.fromRGB(255, 165, 0),
+            ["黄色"] = Color3.fromRGB(255, 255, 0),
+            ["粉色"] = Color3.fromRGB(255, 192, 203),
+            ["紫色"] = Color3.fromRGB(128, 0, 128)
+        }
+        KillerWarningSettings.WarningColor = colorMap[value] or Color3.fromRGB(255, 0, 0)
+        warningLabel.Color = KillerWarningSettings.WarningColor
+    end
+})
+
+-- 音效音量设置
+Warning:AddSlider("SoundVolume", {
+    Text = "音效音量",
+    Min = 0,
+    Max = 1,
+    Default = 0.5,
+    Rounding = 1,
+    Callback = function(value)
+        KillerWarningSettings.SoundVolume = value
+        warningSound.Volume = value
+    end
+})
+
+
+local Visual = Tabs.tzq:AddLeftGroupbox("通知提示")
+
+Visual:AddToggle(
+    "NST",
+    {
+        Text = "三角炸弹生成提示",
+        Default = false,
+        Callback = function(v)
+            if v then
+                NotifySubspaceTripmine =
+                    workspace.Map.Ingame.DescendantAdded:Connect(
+                    function(v)
+                        if v.Name == "塔夫三角炸弹" then
+                            Library:Notify("BETA TEST | Warning\nBlock '三角炸弹已生成！")
+                        end
+                    end
+                )
+            else
+                NotifySubspaceTripmine:Disconnect()
+            end
+        end
+    }
+)
+Visual:AddToggle(
+    "NEK",
+    {
+        Text = "实体生成提示",
+        Default = false,
+        Callback = function(v)
+            if v then
+                NotifyEntityKillers =
+                    workspace.DescendantAdded:Connect(
+                    function(v)
+                        if
+                            v:IsA("Model") and v.Name == "PizzaDeliveryRig" or v.Name == "Bunny" or v.Name == "Mafiaso1" or
+                                v.Name == "Mafiaso2" or
+                                v.Name == "Mafiaso3"
+                         then
+                            Library:Notify("BETA TEST | Warning\nEntity '" .. v.Name .. "' 生成了！")
+                        elseif v:IsA("Model") and v.Name == "1x1x1x1Zombie" then
+                            Library:Notify("BETA TEST | Warning\nEntity '1x1x1x1 (僵尸)' 生成了！")
+                        end
+                    end
+                )
+            else
+                NotifyEntityKillers:Disconnect()
+            end
+        end
+    }
+)
