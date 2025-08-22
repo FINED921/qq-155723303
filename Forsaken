@@ -1843,7 +1843,6 @@ SpecialAimbot:AddToggle("GAA",{
     end
 })
 
-
 local KillerSurvival = Tabs.zdx:AddLeftGroupbox("自动修机")
 
 KillerSurvival:AddSlider("GeneratorDelay", {
