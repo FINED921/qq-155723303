@@ -28,7 +28,7 @@ Library.NotifySide = "Right"
 
 local Window = Library:CreateWindow({
     Title = ' 被遗弃｜FIN',
-    Footer = "正式版 V1.1.2",
+    Footer = "正式版 V2.1.0",
     Icon = 108646851620147,
     Center = true,
     AutoShow = true,
@@ -43,6 +43,7 @@ local Tabs = {
     new = Window:AddTab('公告', 'user'),
     Main = Window:AddTab('功能区','house'),
     Aimbot = Window:AddTab('自瞄区','earth'),
+    zdx = Window:AddTab('自动修机','moon'),
     ["UI Settings"] = Window:AddTab('UI调试', 'settings')
 }
 
@@ -51,9 +52,9 @@ local _hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
 
 local new = Tabs.new:AddRightGroupbox('V1.0.0版本更新内容')
 
-new:AddLabel("[+]添加 自喵区")
-new:AddLabel("[+超级 史诗级更新")
-new:AddLabel("[+]添加 无")
+new:AddLabel("[+]添加 修机区")
+new:AddLabel("[+]更新 自动修机")
+new:AddLabel("[+]添加 一些功能")
 new:AddLabel("[+]添加 无")
 
 
@@ -1839,5 +1840,52 @@ SpecialAimbot:AddToggle("GAA",{
     Text = "访客自瞄",
     Callback = function(v)
         AimAttackGuest(v)
+    end
+})
+
+
+local KillerSurvival = Tabs.zdx:AddLeftGroupbox("自动修机")
+
+KillerSurvival:AddSlider("GeneratorDelay", {
+    Text = "修机间隔",
+    Min = 1.5,
+    Max = 12,
+    Default = 1.5,
+    Compact = true,
+    Rounding = 1,
+    Callback = function(v)
+        _G.AutoGeneratorDelay = v
+    end
+})
+
+_G.AutoGeneratorDelay = 1.5
+
+KillerSurvival:AddToggle("AutoFix", {
+    Text = "自动修发电机",
+    Callback = function(enabled)
+        local debounce = {}
+        local generatorFolder = game.Workspace.Map.Ingame.Map
+        
+        while enabled do
+            task.wait()
+            
+            for _, generator in pairs(generatorFolder:GetChildren()) do
+                if generator.Name == "Generator" then
+                    if not debounce[generator] then
+                        local remotes = generator:FindFirstChild("Remotes")
+                        local re = remotes and remotes:FindFirstChild("RE")
+                        
+                        if re then
+                            debounce[generator] = true
+                            re:FireServer()
+                            
+                            task.delay(_G.AutoGeneratorDelay or 1.5, function()
+                                debounce[generator] = nil
+                            end)
+                        end
+                    end
+                end
+            end
+        end
     end
 })
