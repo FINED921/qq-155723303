@@ -47,7 +47,13 @@ Window:EditOpenButton({
 Main:Button({
     Title = "功能",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/qq-352602248/refs/heads/main/xinqing"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/qq-352602248/refs/heads/main/xinqing"))()
+    end
+})
 
+Main:Button({
+    Title = "功能",
+    Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/hdjsjjdgrhj/script-hub/refs/heads/main/skyhub"))()
     end
 })
