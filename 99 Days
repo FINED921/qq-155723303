@@ -47,6 +47,7 @@ Window:EditOpenButton({
 Main:Button({
     Title = "功能",
     Callback = function()
-        脚本
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/finendss/qq-352602248/refs/heads/main/xinqing"))()
+
     end
 })
